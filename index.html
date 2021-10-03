@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="poker-token.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <title>BlackJack</title>
+  </head>
+  <body onload="init()">
+    <div class="row">
+      <div class="column">
+        <h1 class="">BlackJack</h>
+        <section class="btn-container">
+          <div class="drawing">
+            <button class="draw2">First draw</button>
+            <button class="draw1">Hit</button>
+            <button class="stand">Stand</button>
+            <button class="replay">Next Hand</button>
+          </div>
+          <div class="betting">
+            <button class="bet10P">Bet 10%</button>
+            <button class="bet20P">Bet 20%</button>
+            <button class="bet33P">Bet 33%</button>
+            <button class="betAllP">Bet it all!</button>
+            <button class="doubleD">double down</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="column">
+        <section class="game-details">
+          <h5>
+            <span><i class="fab fa-bitcoin"></i> Chips: </span
+            ><span id="chips">0</span>
+          </h5>
+          <h5>
+            <span><i class="fas fa-dice"></i> Pot: </span
+            ><span id="pot">0</span>
+          </h5>
+          <h5>
+            <span><i class="fas fa-hourglass-start"></i> Remaining hands: </span
+            ><span id="hands">10</span>
+          </h5>
+        </section>
+        <section class="card-details">
+        <div class="flex-container">
+        <h6><span>Your hand value: </span><span id="score">0</span></h6>
+        </div>
+        <div class="playerList"></div>
+        <h6>
+          <span><i class="fas fa-eye"></i> House face card: </span
+          ><span id="face"></span>
+        </h6>
+        <h6>
+          <span><i class="fas fa-house-user"></i> House final-draw: </span
+          ><span id="houseScore">0</span>
+        </h6>
+        <div class="houseList"></div>
+      </div>
+    </section>
+    </div>
+
+    <audio class="drawCardSound" src="drawCardSound.m4a"></audio>
+    <audio class="newCardSound" src="newCardSound.mp3"></audio>
+    <audio class="chipSound" src="chips.mp3"></audio>
+    <audio class="winSound" src="winSound.mp3"></audio>
+    <audio class="loseSound" src="loseSound.mp3"></audio>
+    <audio class="standSound" src="standSound.mp3"></audio>
+    <audio class="gameOverSound" src="gameOverSound.mp3"></audio>
+    <audio class="applauseSound" src="applauseSound.mp3"></audio>
+  </body>
+  <script type="text/javascript" src="deck.json"></script>
+  <script src="app.js"></script>
+</html>

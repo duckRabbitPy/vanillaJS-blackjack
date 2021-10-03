@@ -1,0 +1,126 @@
+html {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 900;
+  font-size: 30px;
+  color: var(--black);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
+}
+
+body {
+  background-color: aliceblue;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.betting {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+}
+
+.game-details {
+  display: flex;
+  flex-direction: row;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.drawing {
+  display: flex;
+  flex-direction: row;
+  margin: 0.5rem;
+}
+
+.column {
+  flex: 50%;
+  padding: 5%;
+}
+
+.playerList {
+  font-size: 30px;
+  color: purple;
+  padding-left: 5%;
+  border-radius: 0.25em;
+}
+
+#houseScore {
+  visibility: hidden;
+}
+
+span {
+  font-size: medium;
+}
+
+#pot {
+  color: rgb(216, 80, 6);
+  padding: 3%;
+}
+
+#hands {
+  color: rgb(191, 31, 154);
+  padding: 3%;
+}
+
+#chips {
+  color: rgb(116, 176, 26);
+  padding: 3%;
+}
+
+#face {
+  font-size: 30px;
+  color: rgb(57, 193, 111);
+}
+
+.houseList {
+  font-size: 30px;
+  color: rgb(57, 193, 111);
+  padding-left: 5%;
+  border-radius: 0.25em;
+  visibility: hidden;
+}
+
+.double {
+  background-color: navajowhite;
+}
+
+@media only screen and (max-width: 700px) {
+  .row {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .game-details {
+    padding-left: 10px;
+  }
+
+  .column {
+    padding: 0;
+  }
+
+  h1 {
+    font-size: smaller;
+  }
+
+  h6 {
+    margin: 10px;
+  }
+}
