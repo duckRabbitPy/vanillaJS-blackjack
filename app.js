@@ -49,6 +49,7 @@ stand.disabled = true;
 nxtGame.disabled = true;
 doubleD.disabled = true;
 firstDraw.disabled = true;
+betPulseOn();
 
 //by default house cards and score hidden
 houseResult.style.visibility = "hidden";
@@ -101,6 +102,9 @@ firstDraw.addEventListener("click", () => {
   betAllP.disabled = true;
   nxtGame.disabled = true;
   doubleD.disabled = false;
+
+  //turn off betting pulse
+  betPulseOff();
 
   let cards = getCards(deck, 2, "player");
   revealCard(cards, "player");
@@ -172,6 +176,7 @@ nxtGame.addEventListener("click", () => {
   bet33P.disabled = false;
   betAllP.disabled = false;
   nxtGame.disabled = true;
+  betPulseOn();
 });
 
 //betting buttons
@@ -525,6 +530,20 @@ function draw() {
   firstDraw.disabled = true;
 }
 
+function betPulseOn() {
+  bet10P.classList.add("pulse");
+  bet20P.classList.add("pulse");
+  bet33P.classList.add("pulse");
+  betAllP.classList.add("pulse");
+}
+
+function betPulseOff() {
+  bet10P.classList.remove("pulse");
+  bet20P.classList.remove("pulse");
+  bet33P.classList.remove("pulse");
+  betAllP.classList.remove("pulse");
+}
+
 function drawSoundFunc() {
   drawSound.play();
 }
@@ -566,4 +585,5 @@ function disableAll() {
   bet33P.disabled = true;
   betAllP.disabled = true;
   nxtGame.disabled = true;
+  betPulseOff();
 }
