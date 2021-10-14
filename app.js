@@ -1,6 +1,7 @@
 const playerResult = document.querySelector(".playerList");
 const houseResult = document.querySelector(".houseList");
 const face = document.getElementById("face");
+const userMessage = document.getElementById("user-message");
 
 let displayChips = document.getElementById("chips");
 let displayPot = document.getElementById("pot");
@@ -94,6 +95,7 @@ const revealCard = function (newCard, reciever) {
 //draws two cards for each
 firstDraw.addEventListener("click", () => {
   drawSoundFunc();
+  alertUser("Hit, stand or double down?");
   hit.disabled = false;
   stand.disabled = false;
   bet10P.disabled = true;
@@ -122,11 +124,11 @@ firstDraw.addEventListener("click", () => {
   firstDraw.disabled = true;
 
   if (score === 21 && houseScore === 21) {
-    alert("Both House and player have BlackJack!");
+    alertUser("Both House and player have BlackJack!");
     draw();
     playOver();
   } else if (score === 21) {
-    alert("You got BlackJack!");
+    alertUser("You got BlackJack!");
     win();
     playOver();
   } else if (playerHand.includes("A") && sumHand(playerHand) === 22) {
@@ -177,6 +179,7 @@ nxtGame.addEventListener("click", () => {
   betAllP.disabled = false;
   nxtGame.disabled = true;
   betPulseOn();
+  alertUser("Place your bet to start");
 });
 
 //betting buttons
@@ -293,19 +296,19 @@ function hitFunc() {
 
   if (score > 21 && !playerHand.includes("A")) {
     displayScore.textContent = score;
-    alert("BUST!");
+    alertUser("BUST!");
     lose();
     playOver();
   } else {
     let Ascore = sumHandLowAce(playerHand);
     displayScore.textContent = Ascore;
     if (Ascore > 21) {
-      alert("BUST!");
+      alertUser("BUST!");
       lose();
       playOver();
     } else if (playerHand.length > 4) {
       displayHouseScore.style.visibility = "visible";
-      alert("Holy moly! Five card trick!");
+      alertUser("Holy moly! Five card trick!");
       win();
       playOver();
     }
@@ -322,7 +325,7 @@ function standFunc() {
     //player has foolishly chosen to stand on pocket Aces
     lose();
     playOver();
-    alert("House Wins");
+    alertUser("House Wins");
   } else {
     while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
       let card = getCards(deck, 1, "house");
@@ -349,7 +352,7 @@ function standFunc() {
         if (lowScore > 21) {
           let lowhouseScore = sumHandLowAce(houseHand);
           displayHouseScore.textContent = lowhouseScore;
-          alert("House bust, you win!");
+          alertUser("House bust, you win!");
           win();
           playOver();
         }
@@ -358,7 +361,7 @@ function standFunc() {
         else if (lowScore > sumHand(playerHand)) {
           let lowhouseScore = sumHandLowAce(houseHand);
           displayHouseScore.textContent = lowhouseScore;
-          alert("House Wins");
+          alertUser("House Wins");
           lose();
           playOver();
 
@@ -366,13 +369,13 @@ function standFunc() {
         } else if (lowScore < sumHand(playerHand)) {
           let lowhouseScore = sumHandLowAce(houseHand);
           displayHouseScore.textContent = lowhouseScore;
-          alert("Player Wins!");
+          alertUser("Player Wins!");
           win();
           playOver();
         }
       } else {
         //no aces and over 21 so house bust
-        alert("House bust, you win!");
+        alertUser("House bust, you win!");
         win();
         playOver();
       }
@@ -380,7 +383,7 @@ function standFunc() {
 
     //if house has higher hand than player (and house is under 21)
     else if (sumHand(houseHand) > sumHand(playerHand)) {
-      alert("House Wins!");
+      alertUser("House Wins!");
       lose();
       playOver();
     }
@@ -392,19 +395,19 @@ function standFunc() {
       //failsafe check to make sure player is bust if over 21 without aces
       if (score > 21 && !playerHand.includes("A")) {
         displayScore.textContent = score;
-        alert("BUST!");
+        alertUser("BUST!");
         lose();
         playOver();
       }
       //player hand wins if has low aces and greater than househand
       else if (Ascore < 22 && Ascore > sumHand(houseHand)) {
-        alert("You Win!");
+        alertUser("You Win!");
         win();
         playOver();
       }
       //player loses if has low aces and lower than househand
       else if (Ascore < 22 && Ascore < sumHand(houseHand)) {
-        alert("House Wins!");
+        alertUser("House Wins!");
         lose();
         playOver();
       }
@@ -414,12 +417,12 @@ function standFunc() {
       houseHand.length === 2 &&
       playerHand.length !== 2
     ) {
-      alert("House got blackJack!");
+      alertUser("House got blackJack!");
       lose();
       playOver();
       //else must be a draw
     } else {
-      alert("draw");
+      alertUser("draw");
       draw();
       playOver();
     }
@@ -466,7 +469,7 @@ function doubleDown() {
   newCardSoundFunc();
 
   if (pot > chips) {
-    alert("You do not have enough chips to double down");
+    alertUser("You do not have enough chips to double down");
   } else {
     let bet = pot;
     chips -= bet;
@@ -492,7 +495,7 @@ function playOver() {
 
   if (hands <= 1) {
     applauseSoundFunc();
-    alert(`Game over! You leave with $${chips}`);
+    alertUser(`Game over! You leave with $${chips}`);
     disableAll();
   }
 }
@@ -511,9 +514,9 @@ function lose() {
   loseSoundFunc();
   stylebox.style.backgroundColor = "#ffcccc";
   if (chips === 0) {
+    disableAll();
     alert("Game over! Refresh page to play again");
     gameOverSoundFunc();
-    disableAll();
   }
   displayChips.textContent = chips;
   pot = 0;
@@ -542,6 +545,10 @@ function betPulseOff() {
   bet20P.classList.remove("pulse");
   bet33P.classList.remove("pulse");
   betAllP.classList.remove("pulse");
+}
+
+function alertUser(str) {
+  userMessage.innerHTML = str;
 }
 
 function drawSoundFunc() {
@@ -577,6 +584,7 @@ function applauseSoundFunc() {
 }
 
 function disableAll() {
+  betPulseOff();
   firstDraw.disabled = true;
   hit.disabled = true;
   stand.disabled = true;
@@ -585,5 +593,4 @@ function disableAll() {
   bet33P.disabled = true;
   betAllP.disabled = true;
   nxtGame.disabled = true;
-  betPulseOff();
 }
