@@ -3,6 +3,12 @@ const houseResult = document.querySelector(".houseList");
 const face = document.getElementById("face");
 const userMessage = document.getElementById("user-message");
 
+let help = document.getElementById("help");
+let helpDisplay = document.getElementById("help_info");
+let scoreboard = document.getElementById("scoreboard");
+let scoreboardDisplay = document.getElementById("scoreboard_info");
+let backBtn = document.getElementById("back_btn");
+
 let displayChips = document.getElementById("chips");
 let displayPot = document.getElementById("pot");
 let displayScore = document.getElementById("score");
@@ -30,6 +36,7 @@ const gameOverSound = document.querySelector(".gameOverSound");
 const applauseSound = document.querySelector(".applauseSound");
 
 const stylebox = document.querySelector("body");
+const rightSection = document.querySelector(".toggle-section");
 
 let deck = [];
 
@@ -180,6 +187,18 @@ nxtGame.addEventListener("click", () => {
   nxtGame.disabled = true;
   betPulseOn();
   alertUser("Place your bet to start");
+});
+
+scoreboard.addEventListener("click", () => {
+  toggleSection("scoreboard");
+});
+
+help.addEventListener("click", () => {
+  toggleSection("help");
+});
+
+backBtn.addEventListener("click", () => {
+  toggleSection("back");
 });
 
 //betting buttons
@@ -593,4 +612,22 @@ function disableAll() {
   bet33P.disabled = true;
   betAllP.disabled = true;
   nxtGame.disabled = true;
+}
+
+function toggleSection(btnType) {
+  backBtn.classList.remove("hide");
+  if (btnType === "scoreboard") {
+    rightSection.classList.add("hide");
+    scoreboardDisplay.classList.remove("hide");
+    helpDisplay.classList.add("hide");
+  } else if (btnType === "help") {
+    rightSection.classList.add("hide");
+    scoreboardDisplay.classList.add("hide");
+    helpDisplay.classList.remove("hide");
+  } else if (btnType === "back") {
+    backBtn.classList.add("hide");
+    scoreboardDisplay.classList.add("hide");
+    helpDisplay.classList.add("hide");
+    rightSection.classList.remove("hide");
+  }
 }
