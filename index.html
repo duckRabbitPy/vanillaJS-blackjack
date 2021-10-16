@@ -15,12 +15,19 @@
     <title>BlackJack ♠</title>
   </head>
   <body onload="init()">
+    <section class="info hstack">
+      <button id="help">Help</button>
+      <button id="scoreboard">Scoreboard</button>
+      <button id="back_btn" class="hide">Back to Game</button>
+    </section>
+    
+    <section class="toggle-section">
     <div class="row">
       <div class="column">
+        <h1>BlackJack ♠</h>
         <section class="message-box">
           <p id="user-message">Place your bet to start</p>
         </section>
-        <h1>BlackJack ♠</h>
         <section class="btn-container">
           <div class="drawing hstack">
             <button class="draw2">First draw</button>
@@ -68,6 +75,20 @@
         </h6>
         <div class="houseList"></div>
       </div>
+    </section>
+
+    <section id="help_info" class="hide">
+      <h2>Rules of the Game</h2>
+      <p>The aim of the game is to complete 10 hands of blackjack and leave with the highest possible number of chips</p>
+    </section>
+
+    <section id="scoreboard_info" class="hide">
+      <h2>Scoreboard</h2>
+    </section>
+
+
+
+
     </section>
     </div>
 
