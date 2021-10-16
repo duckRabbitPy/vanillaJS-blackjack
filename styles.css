@@ -18,6 +18,10 @@ h2 {
   font-weight: lighter;
 }
 
+.larger-text {
+  font-size: larger;
+}
+
 .message-box {
   border: midnightblue 3px solid;
   display: flex;
@@ -95,6 +99,11 @@ button:hover {
 .flex-container {
   display: flex;
   flex-direction: row;
+}
+
+#help_info,
+#scoreboard_info {
+  margin: 1rem;
 }
 
 .drawing {
