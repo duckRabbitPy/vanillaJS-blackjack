@@ -7,6 +7,7 @@ let help = document.getElementById("help");
 let helpDisplay = document.getElementById("help_info");
 let scoreboard = document.getElementById("scoreboard");
 let scoreboardDisplay = document.getElementById("scoreboard_info");
+let leaderboard = document.getElementById("leaderboard");
 let backBtn = document.getElementById("back_btn");
 
 let displayChips = document.getElementById("chips");
@@ -34,6 +35,7 @@ const winSound = document.querySelector(".winSound");
 const loseSound = document.querySelector(".loseSound");
 const gameOverSound = document.querySelector(".gameOverSound");
 const applauseSound = document.querySelector(".applauseSound");
+const clickSound = document.querySelector(".clickSound");
 
 const stylebox = document.querySelector("body");
 const hideableSection = document.querySelector(".toggle-section");
@@ -190,14 +192,17 @@ nxtGame.addEventListener("click", () => {
 });
 
 scoreboard.addEventListener("click", () => {
+  clickSoundFunc();
   toggleSection("scoreboard");
 });
 
 help.addEventListener("click", () => {
+  clickSoundFunc();
   toggleSection("help");
 });
 
 backBtn.addEventListener("click", () => {
+  clickSoundFunc();
   toggleSection("back");
 });
 
@@ -515,6 +520,7 @@ function playOver() {
   if (hands <= 1) {
     applauseSoundFunc();
     alertUser(`Game over! You leave with $${chips}`);
+    writeScoreToMemory(chips);
     disableAll();
   }
 }
@@ -602,6 +608,10 @@ function applauseSoundFunc() {
   applauseSound.play();
 }
 
+function clickSoundFunc() {
+  clickSound.play();
+}
+
 function disableAll() {
   betPulseOff();
   firstDraw.disabled = true;
@@ -631,3 +641,29 @@ function toggleSection(btnType) {
     hideableSection.classList.remove("hide");
   }
 }
+
+function writeScoreToMemory(score) {
+  let currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+  if (currentHistory) {
+    currentHistory.push(score);
+    localStorage.setItem("storedHistory", JSON.stringify(currentHistory));
+    retrieveScores();
+  } else {
+    localStorage.setItem("storedHistory", JSON.stringify([score]));
+  }
+}
+
+function retrieveScores() {
+  let currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+  while (leaderboard.firstChild) {
+    leaderboard.firstChild.remove();
+  }
+  let sortedHistory = currentHistory.sort((a, b) => b - a);
+  sortedHistory.forEach((score) => {
+    let li = document.createElement("li");
+    li.appendChild(document.createTextNode(score));
+    leaderboard.appendChild(li);
+  });
+}
+
+retrieveScores();
