@@ -36,7 +36,7 @@ const gameOverSound = document.querySelector(".gameOverSound");
 const applauseSound = document.querySelector(".applauseSound");
 
 const stylebox = document.querySelector("body");
-const rightSection = document.querySelector(".toggle-section");
+const hideableSection = document.querySelector(".toggle-section");
 
 let deck = [];
 
@@ -617,17 +617,17 @@ function disableAll() {
 function toggleSection(btnType) {
   backBtn.classList.remove("hide");
   if (btnType === "scoreboard") {
-    rightSection.classList.add("hide");
+    hideableSection.classList.add("hide");
     scoreboardDisplay.classList.remove("hide");
     helpDisplay.classList.add("hide");
   } else if (btnType === "help") {
-    rightSection.classList.add("hide");
+    hideableSection.classList.add("hide");
     scoreboardDisplay.classList.add("hide");
     helpDisplay.classList.remove("hide");
   } else if (btnType === "back") {
     backBtn.classList.add("hide");
     scoreboardDisplay.classList.add("hide");
     helpDisplay.classList.add("hide");
-    rightSection.classList.remove("hide");
+    hideableSection.classList.remove("hide");
   }
 }
