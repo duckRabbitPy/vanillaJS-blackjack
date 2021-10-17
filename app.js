@@ -540,7 +540,7 @@ function lose() {
   stylebox.style.backgroundColor = "#ffcccc";
   if (chips === 0) {
     disableAll();
-    alert("Game over! Refresh page to play again");
+    alertUser("Game over! Refresh page to play again");
     gameOverSoundFunc();
   }
   displayChips.textContent = chips;
@@ -650,6 +650,7 @@ function writeScoreToMemory(score) {
     retrieveScores();
   } else {
     localStorage.setItem("storedHistory", JSON.stringify([score]));
+    retrieveScores();
   }
 }
 
@@ -658,12 +659,21 @@ function retrieveScores() {
   while (leaderboard.firstChild) {
     leaderboard.firstChild.remove();
   }
-  let sortedHistory = currentHistory.sort((a, b) => b - a);
-  sortedHistory.forEach((score) => {
-    let li = document.createElement("li");
-    li.appendChild(document.createTextNode(score));
-    leaderboard.appendChild(li);
-  });
+
+  if (currentHistory) {
+    let sortedHistory = currentHistory.sort((a, b) => b - a);
+    sortedHistory.forEach((score) => {
+      let li = document.createElement("li");
+      li.appendChild(document.createTextNode(score));
+      leaderboard.appendChild(li);
+    });
+  } else {
+    leaderboard.appendChild(
+      document.createTextNode(
+        "Complete 10 rounds of BlackJack with a score above 0 to record your score"
+      )
+    );
+  }
 }
 
 retrieveScores();
