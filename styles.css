@@ -6,8 +6,20 @@ html {
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
 }
 
+:root {
+  --main-bg-color: #bfdff6;
+}
+
 body {
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
+  background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(#fff),
+      to(var(--main-bg-color))
+    )
+    fixed;
 }
 
 h1 {
@@ -164,6 +176,26 @@ span {
   background-color: navajowhite;
 }
 
+.glass {
+  position: relative;
+  display: inline-block;
+  background-color: rgb(0, 122, 128); /*for compatibility with older browsers*/
+  background-image: linear-gradient(rgb(191, 238, 246), rgb(153, 225, 247));
+}
+
+.glass:after {
+  content: "";
+  position: absolute;
+  top: 0.5px;
+  left: 0.5px;
+  width: calc(100% - 1px);
+  height: 30%;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.2)
+  );
+}
+
 @keyframes pulse {
   0% {
     transform: scale(0.96);
@@ -199,5 +231,12 @@ span {
 
   h6 {
     margin: 10px;
+  }
+
+  #user-message {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 }

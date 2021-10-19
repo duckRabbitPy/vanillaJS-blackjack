@@ -1,3 +1,4 @@
+var root = document.querySelector(":root");
 const playerResult = document.querySelector(".playerList");
 const houseResult = document.querySelector(".houseList");
 const face = document.getElementById("face");
@@ -177,7 +178,7 @@ nxtGame.addEventListener("click", () => {
   displayScore.textContent = 0;
   displayHouseScore.textContent = 0;
   displayHouseScore.style.visibility = "hidden";
-  stylebox.style.backgroundColor = "aliceblue";
+  root.style.setProperty("--main-bg-color", "#bfdff6");
 
   firstDraw.disabled = true;
   hit.disabled = true;
@@ -527,7 +528,7 @@ function playOver() {
 
 function win() {
   winSoundFunc();
-  stylebox.style.backgroundColor = "#e6ffcc";
+  root.style.setProperty("--main-bg-color", "#90EE90");
   firstDraw.disabled = true;
   chips += pot * 2;
   displayChips.textContent = chips;
@@ -537,7 +538,7 @@ function win() {
 
 function lose() {
   loseSoundFunc();
-  stylebox.style.backgroundColor = "#ffcccc";
+  root.style.setProperty("--main-bg-color", "#f48a8a");
   if (chips === 0) {
     disableAll();
     alertUser("Game over! Refresh page to play again");
@@ -662,9 +663,13 @@ function retrieveScores() {
 
   if (currentHistory) {
     let sortedHistory = currentHistory.sort((a, b) => b - a);
-    sortedHistory.forEach((score) => {
+    sortedHistory.forEach((score, index) => {
       let li = document.createElement("li");
-      li.appendChild(document.createTextNode(score));
+      if (index === 0) {
+        li.appendChild(document.createTextNode(`${score} (Personal best! 🔥)`));
+      } else {
+        li.appendChild(document.createTextNode(score));
+      }
       leaderboard.appendChild(li);
     });
   } else {
