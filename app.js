@@ -22,6 +22,7 @@ const hit = document.querySelector(".draw1");
 const stand = document.querySelector(".stand");
 const doubleD = document.querySelector(".doubleD");
 const nxtGame = document.querySelector(".replay");
+const restart = document.querySelector(".restart");
 
 const bet10P = document.querySelector(".bet10P");
 const bet20P = document.querySelector(".bet20P");
@@ -190,6 +191,10 @@ nxtGame.addEventListener("click", () => {
   nxtGame.disabled = true;
   betPulseOn();
   alertUser("Place your bet to start");
+});
+
+restart.addEventListener("click", () => {
+  location.reload();
 });
 
 scoreboard.addEventListener("click", () => {
@@ -509,20 +514,25 @@ function doubleDown() {
 }
 
 function playOver() {
-  firstDraw.disabled = true;
-  hit.disabled = true;
-  stand.disabled = true;
-  doubleD.disabled = true;
-  nxtGame.disabled = false;
-  houseResult.style.visibility = "visible";
-  displayHouseScore.style.visibility = "visible";
-  playIsOver = true;
+  if (chips > 0) {
+    firstDraw.disabled = true;
+    hit.disabled = true;
+    stand.disabled = true;
+    doubleD.disabled = true;
+    nxtGame.disabled = false;
+    houseResult.style.visibility = "visible";
+    displayHouseScore.style.visibility = "visible";
+    playIsOver = true;
+  } else {
+    restart.classList.remove("hide");
+  }
 
   if (hands <= 1) {
     applauseSoundFunc();
     alertUser(`Game over! You leave with $${chips}`);
     writeScoreToMemory(chips);
     disableAll();
+    restart.classList.remove("hide");
   }
 }
 
@@ -540,8 +550,8 @@ function lose() {
   loseSoundFunc();
   root.style.setProperty("--main-bg-color", "#f48a8a");
   if (chips === 0) {
+    alertUser("Game over! Click restart to play again");
     disableAll();
-    alertUser("Game over! Refresh page to play again");
     gameOverSoundFunc();
   }
   displayChips.textContent = chips;
