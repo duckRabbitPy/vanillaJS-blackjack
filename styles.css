@@ -88,7 +88,7 @@ button:hover {
       left top,
       left bottom,
       from(#fff),
-      to(rgb(77, 77, 231))
+      to(rgb(119, 119, 200))
     )
     fixed;
 }

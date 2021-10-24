@@ -561,7 +561,7 @@ function lose() {
 
 function draw() {
   loseSoundFunc();
-  stylebox.style.backgroundColor = " #d9d9d9";
+  root.style.setProperty("--main-bg-color", "##d9d9d9");
   chips += pot;
   displayChips.textContent = chips;
   pot = 0;
