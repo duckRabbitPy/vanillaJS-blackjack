@@ -7,26 +7,48 @@ const chai = require("chai");
 const assert = chai.assert;
 
 describe("Fixed tests", () => {
-  it("example1", () => {
+  it("exampleA1", () => {
     assert.strictEqual(standFunc([10, 7], [10, 9]), "House Wins");
   });
-  it("example2", () => {
+  it("exampleA2", () => {
     assert.strictEqual(standFunc([10, 7, 2], [10, 9]), "Draw");
   });
-  it("example3", () => {
+  it("exampleA3", () => {
     assert.strictEqual(
       standFunc([10, 7, 4], ["A", 10]),
       "House got blackJack!"
     );
   });
-  it("example4", () => {
+  it("exampleA4", () => {
     assert.strictEqual(standFunc([10, 7], [10, 10, 5]), "You win");
   });
-  it("example5", () => {
+  it("exampleA5", () => {
+    assert.strictEqual(standFunc([9, "A"], ["K", 4, 3]), "You win");
+  });
+  it("exampleA6", () => {
+    assert.strictEqual(standFunc(["A", "A"], ["K", 8]), "House Wins");
+  });
+  it("exampleA7", () => {
+    assert.strictEqual(standFunc(["A", "A"], [10, 6]), "House Wins");
+  });
+  it("exampleA8", () => {
+    assert.strictEqual(standFunc(["K", 8], [9, 9]), "Draw");
+  });
+
+  it("exampleB1", () => {
     assert.strictEqual(hitFunc([10, 7, 2]), undefined);
   });
-  it("example6", () => {
+  it("exampleB2", () => {
     assert.strictEqual(hitFunc([10, 10, 5]), "BUST!");
+  });
+  it("exampleB3", () => {
+    assert.strictEqual(
+      hitFunc(["K", 3, 2, 2, 3]),
+      "Holy moly! Five card trick!"
+    );
+  });
+  it("exampleB4", () => {
+    assert.strictEqual(hitFunc([10, 10, "A", "A"]), "BUST!");
   });
 });
 
@@ -68,9 +90,13 @@ function standFunc(playerHand, houseHand) {
       let score = sumHand(playerHand);
       let Ascore = sumHandLowAce(playerHand);
 
-      //failsafe check to make sure player is bust if over 21 without aces
+      //player is bust if over 21 without aces
       if (score > 21 && !playerHand.includes("A")) {
         return "Bust, house wins";
+      }
+      //player hand wins if not bust and greater than house hand
+      if (score < 21 && score > sumHand(houseHand)) {
+        return "You win";
       }
       //player hand wins if has low aces and greater than househand
       else if (Ascore < 22 && Ascore > sumHand(houseHand)) {

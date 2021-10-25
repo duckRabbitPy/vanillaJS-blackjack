@@ -422,12 +422,18 @@ function standFunc() {
       let score = sumHand(playerHand);
       let Ascore = sumHandLowAce(playerHand);
 
-      //failsafe check to make sure player is bust if over 21 without aces
+      //player is bust if over 21 without aces
       if (score > 21 && !playerHand.includes("A")) {
         displayScore.textContent = score;
         alertUser("BUST!");
         lose();
         playOver();
+      }
+      //player hand wins if not bust and greater than house hand
+      if (score < 21 && score > sumHand(houseHand)) {
+        win();
+        playOver();
+        return "You win";
       }
       //player hand wins if has low aces and greater than househand
       else if (Ascore < 22 && Ascore > sumHand(houseHand)) {
