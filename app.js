@@ -238,6 +238,52 @@ doubleD.addEventListener("click", () => {
   doubleDown();
 });
 
+document.addEventListener("keydown", (event) => {
+  let hotBtn = "";
+
+  switch (event.key) {
+    case "1":
+      hotBtn = bet10P;
+      break;
+    case "2":
+      hotBtn = bet20P;
+      break;
+    case "3":
+      hotBtn = bet33P;
+      break;
+    case "4":
+      hotBtn = betAllP;
+      break;
+    case "5":
+      hotBtn = doubleD;
+      break;
+    case "d":
+      hotBtn = firstDraw;
+      break;
+    case "h":
+      hotBtn = hit;
+      break;
+    case "s":
+      hotBtn = stand;
+      break;
+    case "n":
+      hotBtn = nxtGame;
+      break;
+  }
+
+  if (event.ctrlKey) {
+    try {
+      hotBtn.click();
+      hotBtn.classList.add("flash");
+      window.setTimeout(() => {
+        hotBtn.classList.remove("flash");
+      }, 200);
+    } catch {
+      console.log("invalid key press");
+    }
+  }
+});
+
 //pulls n num of cards out of deck and adds to hand
 function getCards(deck, numOfCards, reciever) {
   let result = [];
