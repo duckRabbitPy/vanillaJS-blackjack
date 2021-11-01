@@ -17,7 +17,7 @@ I started this project with the primary goal of building something of considerab
 <b>Stand</b>: If you stand, you will keep your current card total and the house will play their turns. The house must stand on any total above 16. If your total is greater than the house's total at the end of the round you will win double your stake. If the totals are the same you will draw and get what you bet back. If the house has a greater total you will lose what you bet.</p>
 </li>
 <li><p >
-<b>Double down</b>: If you're feeling lucky you can double your original bet prior to hitting (providing you have enough chips to do so).</p>
+<b>Double down</b>: If you're feeling lucky you can double your original bet prior to hitting and then immediately standing on the next card draw (providing you have enough chips to do so).</p>
 </li>
 </ul>
 </li>

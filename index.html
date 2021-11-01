@@ -15,11 +15,13 @@
     <title>BlackJack ♠</title>
   </head>
   <body onload="init()">
-    <section class="info hstack">
-      <button class="glass" id="help">Help</button>
-      <button class="glass" id="scoreboard">Scoreboard</button>
-      <button class="glass" id="back_btn" class="hide">Back to Game</button>
-    </section>
+    <nav>
+      <ul class="info hstack">
+        <li><button class="glass" id="help">Help</button></li>
+        <li><button class="glass" id="scoreboard">Scoreboard</button></li>
+        <li><button class="glass" id="back_btn" class="hide">Back to Game</button></li>
+      </ul> 
+    </nav>
     
     <section class="toggle-section">
     <div class="row">
@@ -92,7 +94,7 @@
             <b>Stand</b>: If you stand, you will keep your current card total and the house will play their turns. The house must stand on any total above 16. If your total is greater than the house's total at the end of the round you will win double your stake. If the totals are the same you will draw and get what you bet back. If the house has a greater total you will lose what you bet.</p>
           </li>
           <li><p >
-            <b>Double down</b>: If you're feeling lucky you can double your original bet prior to hitting (providing you have enough chips to do so).</p>
+            <b>Double down</b>: If you're feeling lucky you can double your original bet prior to hitting and then immediately standing on the next card draw (providing you have enough chips to do so).</p>
           </li>
         </ul>
       </li>
