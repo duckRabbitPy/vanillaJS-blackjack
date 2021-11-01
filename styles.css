@@ -221,8 +221,8 @@ table .top-row {
   padding-bottom: 10px;
 }
 
-table td {
-  padding-left: 100px;
+.info > li {
+  list-style-type: none;
 }
 
 @keyframes pulse {
