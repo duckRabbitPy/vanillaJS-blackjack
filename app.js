@@ -1,3 +1,4 @@
+//get DOM elements
 var root = document.querySelector(":root");
 const playerResult = document.querySelector(".playerList");
 const houseResult = document.querySelector(".houseList");
@@ -42,8 +43,19 @@ const clickSound = document.querySelector(".clickSound");
 const stylebox = document.querySelector("body");
 const hideableSection = document.querySelector(".toggle-section");
 
-let deck = [];
+/*
+|--------------------------------------------------------------------------
+| Game setup
+|--------------------------------------------------------------------------
+|
+|
+*/
 
+//retrieve top scores from local
+retrieveScores();
+
+//set up global variables
+let deck = [];
 let playerHand = [];
 let houseHand = [];
 let chips = 500;
@@ -51,11 +63,11 @@ let pot = 0;
 let hands = 10;
 let playIsOver = false;
 
-//starter chips and hands
+//display starter chips and hands
 displayChips.textContent = chips;
 displayRemaining.textContent = hands;
 
-//disable all but betting buttons
+//disable all but betting buttons, initiate button pulse animation
 hit.disabled = true;
 stand.disabled = true;
 nxtGame.disabled = true;
@@ -63,226 +75,65 @@ doubleD.disabled = true;
 firstDraw.disabled = true;
 betPulseOn();
 
-//by default house cards and score hidden
-houseResult.style.visibility = "hidden";
-displayHouseScore.style.visibility = "hidden";
+/*
+|--------------------------------------------------------------------------
+| Function declarations
+|--------------------------------------------------------------------------
+|
+|
+*/
 
-//Get the JSON out of local and into a nice format
-function loadJSON(callback) {
-  let xobj = new XMLHttpRequest();
-  xobj.overrideMimeType("application/json");
-  xobj.open("GET", "/deck.json", true);
-  xobj.onreadystatechange = function () {
-    if (xobj.readyState == 4 && xobj.status == "200") {
-      callback(xobj.responseText);
-    }
-  };
-  xobj.send(null);
-}
-
-//fire off the loadJSON function and set/reset the Deck
+//init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
-  loadJSON(function (response) {
-    const actual_JSON = JSON.parse(response);
-    deck = actual_JSON;
-  });
+  fetch("/deck.json")
+    .then((response) => response.json())
+    .then((cards) => {
+      deck = cards;
+    });
 }
 
-//adds new card to player/house innerHMTL
-const revealCard = function (newCard, reciever) {
-  const html = `
-
-     ${newCard}
-    
-    `;
-
-  if (reciever === "player") {
-    playerResult.innerHTML += html;
-  } else if (reciever === "house") {
-    houseResult.innerHTML += html;
-  }
-};
-
-//draws two cards for each
-firstDraw.addEventListener("click", () => {
-  drawSoundFunc();
-  alertUser("Hit, stand or double down?");
-  hit.disabled = false;
-  stand.disabled = false;
-  bet10P.disabled = true;
-  bet20P.disabled = true;
-  bet33P.disabled = true;
-  betAllP.disabled = true;
-  nxtGame.disabled = true;
-  doubleD.disabled = false;
-
-  //turn off betting pulse
-  betPulseOff();
-
-  let cards = getCards(deck, 2, "player");
-  revealCard(cards, "player");
-
-  let score = sumHand(playerHand);
-  displayScore.textContent = score;
-
-  let houseCards = getCards(deck, 2, "house");
-  revealCard(houseCards, "house");
-  face.textContent = houseCards[0];
-
-  let houseScore = sumHand(houseHand);
-  displayHouseScore.textContent = houseScore;
-
-  firstDraw.disabled = true;
-
-  if (score === 21 && houseScore === 21) {
-    alertUser("Both House and player have BlackJack!");
-    draw();
-    playOver();
-  } else if (score === 21) {
-    alertUser("You got BlackJack!");
-    win();
-    playOver();
-  } else if (playerHand.includes("A") && sumHand(playerHand) === 22) {
-    //player has foolishly chosen to stand on pocket Aces
-    let pocketAces = sumHandLowAce(playerHand);
-    displayScore.textContent = pocketAces;
-  }
-});
-
-//draws one card for player
-hit.addEventListener("click", () => {
-  hitFunc();
-});
-
-//make a stand, house must draw unless over 17
-stand.addEventListener("click", () => {
-  standFunc();
-});
-
-//clears and resets for next game
-nxtGame.addEventListener("click", () => {
-  //resets deck
-  init();
-
-  hands -= 1;
-  displayRemaining.textContent = hands;
-  playIsOver = false;
-
-  playerResult.innerHTML = "";
-  houseResult.style.visibility = "hidden";
-  face.textContent = "";
-  houseResult.innerHTML = "";
-
-  playerHand = [];
-  houseHand = [];
-
-  displayScore.textContent = 0;
-  displayHouseScore.textContent = 0;
-  displayHouseScore.style.visibility = "hidden";
-  root.style.setProperty("--main-bg-color", "#bfdff6");
-
-  firstDraw.disabled = true;
-  hit.disabled = true;
-  stand.disabled = true;
-  bet10P.disabled = false;
-  bet20P.disabled = false;
-  bet33P.disabled = false;
-  betAllP.disabled = false;
-  nxtGame.disabled = true;
-  betPulseOn();
-  alertUser("Place your bet to start");
-});
-
-restart.addEventListener("click", () => {
-  location.reload();
-});
-
-scoreboard.addEventListener("click", () => {
-  clickSoundFunc();
-  toggleSection("scoreboard");
-});
-
-help.addEventListener("click", () => {
-  clickSoundFunc();
-  toggleSection("help");
-});
-
-backBtn.addEventListener("click", () => {
-  clickSoundFunc();
-  toggleSection("back");
-});
-
-//betting buttons
-bet10P.addEventListener("click", () => {
-  bet10();
-  firstDraw.disabled = false;
-});
-
-bet20P.addEventListener("click", () => {
-  bet20();
-  firstDraw.disabled = false;
-});
-
-bet33P.addEventListener("click", () => {
-  bet33();
-  firstDraw.disabled = false;
-});
-
-betAllP.addEventListener("click", () => {
-  betAll();
-  firstDraw.disabled = false;
-});
-
-doubleD.addEventListener("click", () => {
-  firstDraw.disabled = false;
-  doubleDown();
-});
-
-document.addEventListener("keydown", (event) => {
-  let hotBtn = "";
-
-  switch (event.key) {
-    case "1":
-      hotBtn = bet10P;
+function placeBet(amount = "bet10") {
+  let divisor;
+  switch (amount) {
+    case "bet10":
+      divisor = 10;
       break;
-    case "2":
-      hotBtn = bet20P;
+    case "bet20":
+      divisor = 5;
       break;
-    case "3":
-      hotBtn = bet33P;
+    case "bet33":
+      divisor = 3;
       break;
-    case "4":
-      hotBtn = betAllP;
-      break;
-    case "5":
-      hotBtn = doubleD;
-      break;
-    case "d":
-      hotBtn = firstDraw;
-      break;
-    case "h":
-      hotBtn = hit;
-      break;
-    case "s":
-      hotBtn = stand;
-      break;
-    case "n":
-      hotBtn = nxtGame;
+    case "betAll":
+      divisor = 1;
       break;
   }
 
-  if (event.ctrlKey) {
-    try {
-      hotBtn.click();
-      hotBtn.classList.add("flash");
-      window.setTimeout(() => {
-        hotBtn.classList.remove("flash");
-      }, 200);
-    } catch {
-      console.log("invalid key press");
+  let bet = Math.floor(chips / divisor);
+  chipSoundFunc();
+  chips -= bet;
+  pot += bet;
+  displayChips.textContent = chips;
+  displayPot.textContent = pot;
+}
+
+function doubleDown() {
+  newCardSoundFunc();
+
+  if (pot > chips) {
+    alertUser("You do not have enough chips to double down");
+  } else {
+    let bet = pot;
+    chips -= bet;
+    pot += bet;
+    displayChips.textContent = chips;
+    displayPot.textContent = pot;
+    hitFunc();
+    if (playIsOver === false) {
+      standFunc();
     }
   }
-});
+}
 
 //pulls n num of cards out of deck and adds to hand
 function getCards(deck, numOfCards, reciever) {
@@ -308,59 +159,22 @@ function getCards(deck, numOfCards, reciever) {
   return result;
 }
 
-//adds up value of hand
-function sumHand(hand) {
-  total = 0;
+//define function that when called adds new card to player/house innerHMTL
+function revealCard(newCard, reciever) {
+  const html = `
 
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 11;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
+     ${newCard}
+    
+    `;
+
+  if (reciever === "player") {
+    playerResult.innerHTML += html;
+  } else if (reciever === "house") {
+    houseResult.innerHTML += html;
   }
-  return total;
 }
 
-function sumHandLowAce(hand) {
-  total = 0;
-
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 1;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
-  }
-  return total;
-}
-
+//adds new card to player hand
 function hitFunc() {
   newCardSoundFunc();
 
@@ -391,10 +205,9 @@ function hitFunc() {
   }
 }
 
+//this is where the winner is decided, the house will keep drawing until they have a score of 17 or more
 function standFunc() {
   standSoundFunc();
-  displayScore.style.backgroundColor = "lightgreen";
-  displayHouseScore.style.backgroundColor = "lightyellow";
   doubleD.disabled = true;
 
   if (playerHand.includes("A") && sumHand(playerHand) === 22) {
@@ -511,60 +324,6 @@ function standFunc() {
   }
 }
 
-function bet10() {
-  chipSoundFunc();
-  let bet = Math.floor(chips / 10);
-  chips -= bet;
-  pot += bet;
-  displayChips.textContent = chips;
-  displayPot.textContent = pot;
-}
-
-function bet20() {
-  chipSoundFunc();
-  let bet = Math.floor(chips / 5);
-  chips -= bet;
-  pot += bet;
-  displayChips.textContent = chips;
-  displayPot.textContent = pot;
-}
-
-function bet33() {
-  chipSoundFunc();
-  let bet = Math.floor(chips / 3);
-  chips -= bet;
-  pot += bet;
-  displayChips.textContent = chips;
-  displayPot.textContent = pot;
-}
-
-function betAll() {
-  chipSoundFunc();
-  let bet = chips;
-  chips -= bet;
-  pot += bet;
-  displayChips.textContent = chips;
-  displayPot.textContent = pot;
-}
-
-function doubleDown() {
-  newCardSoundFunc();
-
-  if (pot > chips) {
-    alertUser("You do not have enough chips to double down");
-  } else {
-    let bet = pot;
-    chips -= bet;
-    pot += bet;
-    displayChips.textContent = chips;
-    displayPot.textContent = pot;
-    hitFunc();
-    if (playIsOver === false) {
-      standFunc();
-    }
-  }
-}
-
 function playOver() {
   if (chips > 0) {
     firstDraw.disabled = true;
@@ -586,6 +345,60 @@ function playOver() {
     disableAll();
     restart.classList.remove("hide");
   }
+}
+
+//adds up value of hand
+function sumHand(hand) {
+  total = 0;
+
+  for (x = 0; x < hand.length; x++) {
+    if (typeof hand[x] === "number") {
+      total += hand[x];
+    } else {
+      switch (hand[x]) {
+        case "A":
+          total += 11;
+          break;
+        case "K":
+          total += 10;
+          break;
+        case "Q":
+          total += 10;
+          break;
+        case "J":
+          total += 10;
+          break;
+      }
+    }
+  }
+  return total;
+}
+
+//sums the hand with Aces counting as 1 instead of 11
+function sumHandLowAce(hand) {
+  total = 0;
+
+  for (x = 0; x < hand.length; x++) {
+    if (typeof hand[x] === "number") {
+      total += hand[x];
+    } else {
+      switch (hand[x]) {
+        case "A":
+          total += 1;
+          break;
+        case "K":
+          total += 10;
+          break;
+        case "Q":
+          total += 10;
+          break;
+        case "J":
+          total += 10;
+          break;
+      }
+    }
+  }
+  return total;
 }
 
 function win() {
@@ -743,4 +556,192 @@ function retrieveScores() {
   }
 }
 
-retrieveScores();
+/*
+|--------------------------------------------------------------------------
+| Event Listeners
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+//draws two cards for player and house and acts if blackjack present
+firstDraw.addEventListener("click", () => {
+  drawSoundFunc();
+  alertUser("Hit, stand or double down?");
+  hit.disabled = false;
+  stand.disabled = false;
+  bet10P.disabled = true;
+  bet20P.disabled = true;
+  bet33P.disabled = true;
+  betAllP.disabled = true;
+  nxtGame.disabled = true;
+  doubleD.disabled = false;
+
+  //turn off betting pulse
+  betPulseOff();
+
+  let cards = getCards(deck, 2, "player");
+  revealCard(cards, "player");
+
+  let score = sumHand(playerHand);
+  displayScore.textContent = score;
+
+  let houseCards = getCards(deck, 2, "house");
+  revealCard(houseCards, "house");
+  face.textContent = houseCards[0];
+
+  let houseScore = sumHand(houseHand);
+  displayHouseScore.textContent = houseScore;
+
+  firstDraw.disabled = true;
+
+  if (score === 21 && houseScore === 21) {
+    alertUser("Both House and player have BlackJack!");
+    draw();
+    playOver();
+  } else if (score === 21) {
+    alertUser("You got BlackJack!");
+    win();
+    playOver();
+  } else if (playerHand.includes("A") && sumHand(playerHand) === 22) {
+    //player has foolishly chosen to stand on pocket Aces
+    let pocketAces = sumHandLowAce(playerHand);
+    displayScore.textContent = pocketAces;
+  }
+});
+
+//draws one card for player
+hit.addEventListener("click", () => {
+  hitFunc();
+});
+
+//make a stand, house must draw unless over 17
+stand.addEventListener("click", () => {
+  standFunc();
+});
+
+//clears and resets for next game
+nxtGame.addEventListener("click", () => {
+  //resets deck
+  init();
+
+  hands -= 1;
+  displayRemaining.textContent = hands;
+  playIsOver = false;
+
+  playerResult.innerHTML = "";
+  houseResult.style.visibility = "hidden";
+  face.textContent = "";
+  houseResult.innerHTML = "";
+
+  playerHand = [];
+  houseHand = [];
+
+  displayScore.textContent = 0;
+  displayHouseScore.textContent = 0;
+  displayHouseScore.style.visibility = "hidden";
+  root.style.setProperty("--main-bg-color", "#bfdff6");
+
+  firstDraw.disabled = true;
+  hit.disabled = true;
+  stand.disabled = true;
+  bet10P.disabled = false;
+  bet20P.disabled = false;
+  bet33P.disabled = false;
+  betAllP.disabled = false;
+  nxtGame.disabled = true;
+  betPulseOn();
+  alertUser("Place your bet to start");
+});
+
+restart.addEventListener("click", () => {
+  location.reload();
+});
+
+scoreboard.addEventListener("click", () => {
+  clickSoundFunc();
+  toggleSection("scoreboard");
+});
+
+help.addEventListener("click", () => {
+  clickSoundFunc();
+  toggleSection("help");
+});
+
+backBtn.addEventListener("click", () => {
+  clickSoundFunc();
+  toggleSection("back");
+});
+
+//betting buttons
+bet10P.addEventListener("click", () => {
+  // bet10();
+  placeBet("bet10");
+  firstDraw.disabled = false;
+});
+
+bet20P.addEventListener("click", () => {
+  placeBet("bet20");
+  firstDraw.disabled = false;
+});
+
+bet33P.addEventListener("click", () => {
+  placeBet("bet33");
+  firstDraw.disabled = false;
+});
+
+betAllP.addEventListener("click", () => {
+  placeBet("betAll");
+  firstDraw.disabled = false;
+});
+
+doubleD.addEventListener("click", () => {
+  firstDraw.disabled = false;
+  doubleDown();
+});
+
+document.addEventListener("keydown", (event) => {
+  let hotBtn = "";
+
+  switch (event.key) {
+    case "1":
+      hotBtn = bet10P;
+      break;
+    case "2":
+      hotBtn = bet20P;
+      break;
+    case "3":
+      hotBtn = bet33P;
+      break;
+    case "4":
+      hotBtn = betAllP;
+      break;
+    case "5":
+      hotBtn = doubleD;
+      break;
+    case "d":
+      hotBtn = firstDraw;
+      break;
+    case "h":
+      hotBtn = hit;
+      break;
+    case "s":
+      hotBtn = stand;
+      break;
+    case "n":
+      hotBtn = nxtGame;
+      break;
+  }
+
+  if (event.ctrlKey) {
+    try {
+      hotBtn.click();
+      hotBtn.classList.add("flash");
+      window.setTimeout(() => {
+        hotBtn.classList.remove("flash");
+      }, 200);
+    } catch {
+      console.log("invalid key press");
+    }
+  }
+});
