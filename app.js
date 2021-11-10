@@ -43,6 +43,14 @@ const clickSound = document.querySelector(".clickSound");
 const stylebox = document.querySelector("body");
 const hideableSection = document.querySelector(".toggle-section");
 
+/*
+|--------------------------------------------------------------------------
+| Game setup
+|--------------------------------------------------------------------------
+|
+|
+*/
+
 //retrieve top scores from local
 retrieveScores();
 
@@ -67,7 +75,13 @@ doubleD.disabled = true;
 firstDraw.disabled = true;
 betPulseOn();
 
-//Function declarations
+/*
+|--------------------------------------------------------------------------
+| Function declarations
+|--------------------------------------------------------------------------
+|
+|
+*/
 
 //init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
@@ -78,18 +92,46 @@ function init() {
     });
 }
 
-//define function that when called adds new card to player/house innerHMTL
-function revealCard(newCard, reciever) {
-  const html = `
+function placeBet(amount = "bet10") {
+  let divisor;
+  switch (amount) {
+    case "bet10":
+      divisor = 10;
+      break;
+    case "bet20":
+      divisor = 5;
+      break;
+    case "bet33":
+      divisor = 3;
+      break;
+    case "betAll":
+      divisor = 1;
+      break;
+  }
 
-     ${newCard}
-    
-    `;
+  let bet = Math.floor(chips / divisor);
+  chipSoundFunc();
+  chips -= bet;
+  pot += bet;
+  displayChips.textContent = chips;
+  displayPot.textContent = pot;
+}
 
-  if (reciever === "player") {
-    playerResult.innerHTML += html;
-  } else if (reciever === "house") {
-    houseResult.innerHTML += html;
+function doubleDown() {
+  newCardSoundFunc();
+
+  if (pot > chips) {
+    alertUser("You do not have enough chips to double down");
+  } else {
+    let bet = pot;
+    chips -= bet;
+    pot += bet;
+    displayChips.textContent = chips;
+    displayPot.textContent = pot;
+    hitFunc();
+    if (playIsOver === false) {
+      standFunc();
+    }
   }
 }
 
@@ -117,58 +159,19 @@ function getCards(deck, numOfCards, reciever) {
   return result;
 }
 
-//adds up value of hand
-function sumHand(hand) {
-  total = 0;
+//define function that when called adds new card to player/house innerHMTL
+function revealCard(newCard, reciever) {
+  const html = `
 
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 11;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
+     ${newCard}
+    
+    `;
+
+  if (reciever === "player") {
+    playerResult.innerHTML += html;
+  } else if (reciever === "house") {
+    houseResult.innerHTML += html;
   }
-  return total;
-}
-
-//sums the hand with Aces counting as 1 instead of 11
-function sumHandLowAce(hand) {
-  total = 0;
-
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 1;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
-  }
-  return total;
 }
 
 //adds new card to player hand
@@ -321,49 +324,6 @@ function standFunc() {
   }
 }
 
-function placeBet(amount = "bet10") {
-  let divisor;
-  switch (amount) {
-    case "bet10":
-      divisor = 10;
-      break;
-    case "bet20":
-      divisor = 5;
-      break;
-    case "bet33":
-      divisor = 3;
-      break;
-    case "betAll":
-      divisor = 1;
-      break;
-  }
-
-  let bet = Math.floor(chips / divisor);
-  chipSoundFunc();
-  chips -= bet;
-  pot += bet;
-  displayChips.textContent = chips;
-  displayPot.textContent = pot;
-}
-
-function doubleDown() {
-  newCardSoundFunc();
-
-  if (pot > chips) {
-    alertUser("You do not have enough chips to double down");
-  } else {
-    let bet = pot;
-    chips -= bet;
-    pot += bet;
-    displayChips.textContent = chips;
-    displayPot.textContent = pot;
-    hitFunc();
-    if (playIsOver === false) {
-      standFunc();
-    }
-  }
-}
-
 function playOver() {
   if (chips > 0) {
     firstDraw.disabled = true;
@@ -385,6 +345,60 @@ function playOver() {
     disableAll();
     restart.classList.remove("hide");
   }
+}
+
+//adds up value of hand
+function sumHand(hand) {
+  total = 0;
+
+  for (x = 0; x < hand.length; x++) {
+    if (typeof hand[x] === "number") {
+      total += hand[x];
+    } else {
+      switch (hand[x]) {
+        case "A":
+          total += 11;
+          break;
+        case "K":
+          total += 10;
+          break;
+        case "Q":
+          total += 10;
+          break;
+        case "J":
+          total += 10;
+          break;
+      }
+    }
+  }
+  return total;
+}
+
+//sums the hand with Aces counting as 1 instead of 11
+function sumHandLowAce(hand) {
+  total = 0;
+
+  for (x = 0; x < hand.length; x++) {
+    if (typeof hand[x] === "number") {
+      total += hand[x];
+    } else {
+      switch (hand[x]) {
+        case "A":
+          total += 1;
+          break;
+        case "K":
+          total += 10;
+          break;
+        case "Q":
+          total += 10;
+          break;
+        case "J":
+          total += 10;
+          break;
+      }
+    }
+  }
+  return total;
 }
 
 function win() {
@@ -542,7 +556,13 @@ function retrieveScores() {
   }
 }
 
-// Event listeners
+/*
+|--------------------------------------------------------------------------
+| Event Listeners
+|--------------------------------------------------------------------------
+|
+|
+*/
 
 //draws two cards for player and house and acts if blackjack present
 firstDraw.addEventListener("click", () => {
