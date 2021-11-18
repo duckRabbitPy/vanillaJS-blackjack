@@ -465,6 +465,7 @@ function standSoundFunc() {
 }
 
 function chipSoundFunc() {
+  chipSound.currentTime = 0;
   chipSound.play();
 }
 
@@ -485,6 +486,7 @@ function applauseSoundFunc() {
 }
 
 function clickSoundFunc() {
+  clickSound.currentTime = 0;
   clickSound.play();
 }
 
