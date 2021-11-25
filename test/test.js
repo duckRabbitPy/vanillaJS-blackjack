@@ -25,6 +25,7 @@ describe("Fixed tests", () => {
   it("exampleA5", () => {
     assert.strictEqual(standFunc([9, "A"], ["K", 4, 3]), "You win");
   });
+
   it("exampleA6", () => {
     assert.strictEqual(standFunc(["A", "A"], ["K", 8]), "House Wins");
   });
@@ -33,6 +34,15 @@ describe("Fixed tests", () => {
   });
   it("exampleA8", () => {
     assert.strictEqual(standFunc(["K", 8], [9, 9]), "Draw");
+  });
+  it("exampleA9", () => {
+    assert.strictEqual(standFunc([7, 3, "A"], ["A", 2, 6]), "You win");
+  });
+  it("exampleA10", () => {
+    assert.strictEqual(standFunc([7, 3, "A"], ["A", 7, 3]), "Draw");
+  });
+  it("exampleA11", () => {
+    assert.strictEqual(standFunc([7, 2, "A"], ["A", 7, 3]), "House Wins");
   });
 
   it("exampleB1", () => {
@@ -95,7 +105,7 @@ function standFunc(playerHand, houseHand) {
         return "Bust, house wins";
       }
       //player hand wins if not bust and greater than house hand
-      if (score < 21 && score > sumHand(houseHand)) {
+      if (score <= 21 && score > sumHand(houseHand)) {
         return "You win";
       }
       //player hand wins if has low aces and greater than househand
