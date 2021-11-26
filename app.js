@@ -289,7 +289,7 @@ function standFunc() {
         playOver();
       }
       //player hand wins if not bust and greater than house hand
-      if (score < 21 && score > sumHand(houseHand)) {
+      if (score <= 21 && score > sumHand(houseHand)) {
         win();
         playOver();
         return "You win";
