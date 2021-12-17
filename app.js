@@ -184,24 +184,17 @@ function hitFunc() {
   let score = sumHand(playerHand);
   doubleD.disabled = true;
 
+  let result = hitResult(playerHand);
+  showResult(result);
+
   if (score > 21 && !playerHand.includes("A")) {
     displayScore.textContent = score;
-    alertUser("BUST!");
-    lose();
-    playOver();
   } else {
     let Ascore = sumHandLowAce(playerHand);
     displayScore.textContent = Ascore;
-    if (Ascore > 21) {
-      alertUser("BUST!");
-      lose();
-      playOver();
-    } else if (playerHand.length > 4) {
-      displayHouseScore.style.visibility = "visible";
-      alertUser("Holy moly! Five card trick!");
-      win();
-      playOver();
-    }
+  }
+  if (playerHand.length > 4) {
+    displayHouseScore.style.visibility = "visible";
   }
 }
 
@@ -210,118 +203,16 @@ function standFunc() {
   standSoundFunc();
   doubleD.disabled = true;
 
-  if (playerHand.includes("A") && sumHand(playerHand) === 22) {
-    //player has foolishly chosen to stand on pocket Aces
-    lose();
-    playOver();
-    alertUser("House Wins");
-  } else {
-    while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
-      let card = getCards(deck, 1, "house");
-      revealCard(card, "house");
+  while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
+    let card = getCards(deck, 1, "house");
+    revealCard(card, "house");
 
-      let houseScore = sumHand(houseHand);
-      displayHouseScore.textContent = houseScore;
-    }
-
-    //set low ace score
-    let lowScore = sumHandLowAce(houseHand);
-
-    //if house hand is over 21
-    if (sumHand(houseHand) > 21) {
-      //if hand has an ace
-      if (houseHand.includes("A")) {
-        //keep drawing till 17 or above and lower than 22
-        while (lowScore < 17 && lowScore < 22) {
-          let card = getCards(deck, 1, "house");
-          revealCard(card, "house");
-          lowScore = sumHandLowAce(houseHand);
-        }
-
-        if (lowScore > 21) {
-          let lowhouseScore = sumHandLowAce(houseHand);
-          displayHouseScore.textContent = lowhouseScore;
-          alertUser("House bust, you win!");
-          win();
-          playOver();
-        }
-
-        //if ace low house hand higher than player hand, house wins
-        else if (lowScore > sumHand(playerHand)) {
-          let lowhouseScore = sumHandLowAce(houseHand);
-          displayHouseScore.textContent = lowhouseScore;
-          alertUser("House Wins");
-          lose();
-          playOver();
-
-          //if ace low house hand lower than player hand, player wins
-        } else if (lowScore < sumHand(playerHand)) {
-          let lowhouseScore = sumHandLowAce(houseHand);
-          displayHouseScore.textContent = lowhouseScore;
-          alertUser("Player Wins!");
-          win();
-          playOver();
-        }
-      } else {
-        //no aces and over 21 so house bust
-        alertUser("House bust, you win!");
-        win();
-        playOver();
-      }
-    }
-
-    //if house has higher hand than player (and house is under 21)
-    else if (sumHand(houseHand) > sumHand(playerHand)) {
-      alertUser("House Wins!");
-      lose();
-      playOver();
-    }
-    //else if house has lower hand than player:
-    else if (sumHand(houseHand) < sumHand(playerHand)) {
-      let score = sumHand(playerHand);
-      let Ascore = sumHandLowAce(playerHand);
-
-      //player is bust if over 21 without aces
-      if (score > 21 && !playerHand.includes("A")) {
-        displayScore.textContent = score;
-        alertUser("BUST!");
-        lose();
-        playOver();
-      }
-      //player hand wins if not bust and greater than house hand
-      if (score <= 21 && score > sumHand(houseHand)) {
-        win();
-        playOver();
-        return "You win";
-      }
-      //player hand wins if has low aces and greater than househand
-      else if (Ascore < 22 && Ascore > sumHand(houseHand)) {
-        alertUser("You Win!");
-        win();
-        playOver();
-      }
-      //player loses if has low aces and lower than househand
-      else if (Ascore < 22 && Ascore < sumHand(houseHand)) {
-        alertUser("House Wins!");
-        lose();
-        playOver();
-      }
-      // if there is a draw but house has blackJack
-    } else if (
-      sumHand(houseHand) === 21 &&
-      houseHand.length === 2 &&
-      playerHand.length !== 2
-    ) {
-      alertUser("House got blackJack!");
-      lose();
-      playOver();
-      //else must be a draw
-    } else {
-      alertUser("draw");
-      draw();
-      playOver();
-    }
+    let houseScore = sumHand(houseHand);
+    displayHouseScore.textContent = houseScore;
   }
+
+  let result = standResult(playerHand, houseHand);
+  showResult(result);
 }
 
 function playOver() {
@@ -345,60 +236,6 @@ function playOver() {
     disableAll();
     restart.classList.remove("hide");
   }
-}
-
-//adds up value of hand
-function sumHand(hand) {
-  total = 0;
-
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 11;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
-  }
-  return total;
-}
-
-//sums the hand with Aces counting as 1 instead of 11
-function sumHandLowAce(hand) {
-  total = 0;
-
-  for (x = 0; x < hand.length; x++) {
-    if (typeof hand[x] === "number") {
-      total += hand[x];
-    } else {
-      switch (hand[x]) {
-        case "A":
-          total += 1;
-          break;
-        case "K":
-          total += 10;
-          break;
-        case "Q":
-          total += 10;
-          break;
-        case "J":
-          total += 10;
-          break;
-      }
-    }
-  }
-  return total;
 }
 
 function win() {
@@ -446,6 +283,31 @@ function betPulseOff() {
   bet20P.classList.remove("pulse");
   bet33P.classList.remove("pulse");
   betAllP.classList.remove("pulse");
+}
+
+function showResult(result) {
+  switch (result) {
+    case "House Wins":
+      lose();
+      break;
+    case "Draw":
+      draw();
+      break;
+    case "You win":
+      win();
+      break;
+    case "BUST!":
+      lose();
+      break;
+    case "House got blackJack!":
+      lose();
+      break;
+    case "Holy moly! Five card trick!":
+      win();
+      break;
+  }
+  playOver();
+  alertUser(result);
 }
 
 function alertUser(str) {

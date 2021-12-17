@@ -1,70 +1,4 @@
-// Run: ./node_modules/mocha/bin/mocha
-
-const mocha = require("mocha");
-const describe = mocha.describe;
-const it = mocha.it;
-const chai = require("chai");
-const assert = chai.assert;
-
-describe("Fixed tests", () => {
-  it("exampleA1", () => {
-    assert.strictEqual(standFunc([10, 7], [10, 9]), "House Wins");
-  });
-  it("exampleA2", () => {
-    assert.strictEqual(standFunc([10, 7, 2], [10, 9]), "Draw");
-  });
-  it("exampleA3", () => {
-    assert.strictEqual(
-      standFunc([10, 7, 4], ["A", 10]),
-      "House got blackJack!"
-    );
-  });
-  it("exampleA4", () => {
-    assert.strictEqual(standFunc([10, 7], [10, 10, 5]), "You win");
-  });
-  it("exampleA5", () => {
-    assert.strictEqual(standFunc([9, "A"], ["K", 4, 3]), "You win");
-  });
-
-  it("exampleA6", () => {
-    assert.strictEqual(standFunc(["A", "A"], ["K", 8]), "House Wins");
-  });
-  it("exampleA7", () => {
-    assert.strictEqual(standFunc(["A", "A"], [10, 6]), "House Wins");
-  });
-  it("exampleA8", () => {
-    assert.strictEqual(standFunc(["K", 8], [9, 9]), "Draw");
-  });
-  it("exampleA9", () => {
-    assert.strictEqual(standFunc([7, 3, "A"], ["A", 2, 6]), "You win");
-  });
-  it("exampleA10", () => {
-    assert.strictEqual(standFunc([7, 3, "A"], ["A", 7, 3]), "Draw");
-  });
-  it("exampleA11", () => {
-    assert.strictEqual(standFunc([7, 2, "A"], ["A", 7, 3]), "House Wins");
-  });
-
-  it("exampleB1", () => {
-    assert.strictEqual(hitFunc([10, 7, 2]), undefined);
-  });
-  it("exampleB2", () => {
-    assert.strictEqual(hitFunc([10, 10, 5]), "BUST!");
-  });
-  it("exampleB3", () => {
-    assert.strictEqual(
-      hitFunc(["K", 3, 2, 2, 3]),
-      "Holy moly! Five card trick!"
-    );
-  });
-  it("exampleB4", () => {
-    assert.strictEqual(hitFunc([10, 10, "A", "A"]), "BUST!");
-  });
-});
-
-//purefunction version of standFunc used in production, accepts final playerHand and houseHand values instead of using getCards function (to avoid side effects)
-
-function standFunc(playerHand, houseHand) {
+function standResult(playerHand, houseHand) {
   if (playerHand.includes("A") && sumHand(playerHand) === 22) {
     //player has foolishly chosen to stand on pocket Aces
     return "House Wins";
@@ -183,7 +117,7 @@ function sumHandLowAce(hand) {
   return total;
 }
 
-function hitFunc(playerHand) {
+function hitResult(playerHand) {
   let score = sumHand(playerHand);
 
   if (score > 21 && !playerHand.includes("A")) {
@@ -194,6 +128,8 @@ function hitFunc(playerHand) {
       return "BUST!";
     } else if (playerHand.length > 4) {
       return "Holy moly! Five card trick!";
+    } else {
+      return "Hit, stand or double down?";
     }
   }
 }
