@@ -1,5 +1,5 @@
 test("exampleA1", () => {
-  equal(standResult([10, 7], [10, 9]), "House Wins");
+  equal(standResult([10, 7], [10, 9]), "House wins");
 });
 test("exampleA2", () => {
   equal(standResult([10, 7, 2], [10, 9]), "Draw");
@@ -15,10 +15,10 @@ test("exampleA5", () => {
 });
 
 test("exampleA6", () => {
-  equal(standResult(["A", "A"], ["K", 8]), "House Wins");
+  equal(standResult(["A", "A"], ["K", 8]), "House wins");
 });
 test("exampleA7", () => {
-  equal(standResult(["A", "A"], [10, 6]), "House Wins");
+  equal(standResult(["A", "A"], [10, 6]), "House wins");
 });
 test("exampleA8", () => {
   equal(standResult(["K", 8], [9, 9]), "Draw");
@@ -30,9 +30,11 @@ test("exampleA10", () => {
   equal(standResult([7, 3, "A"], ["A", 7, 3]), "Draw");
 });
 test("exampleA11", () => {
-  equal(standResult([7, 2, "A"], ["A", 7, 3]), "House Wins");
+  equal(standResult([7, 2, "A"], ["A", 7, 3]), "House wins");
 });
-
+test("exampleA12", () => {
+  equal(standResult([7, 9, 9], [10, 5, 10]), "BUST!");
+});
 test("exampleB1", () => {
   equal(hitResult([10, 7, 2]), "Hit, stand or double down?");
 });

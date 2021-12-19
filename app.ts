@@ -245,6 +245,7 @@ function playOver() {
 }
 
 function win() {
+  playOver();
   winSoundFunc();
   root!.style.setProperty("--main-bg-color", "#90EE90");
   firstDraw!.disabled = true;
@@ -255,6 +256,7 @@ function win() {
 }
 
 function lose() {
+  playOver();
   loseSoundFunc();
   root!.style.setProperty("--main-bg-color", "#f48a8a");
   if (chips === 0) {
@@ -268,6 +270,7 @@ function lose() {
 }
 
 function draw() {
+  playOver();
   loseSoundFunc();
   root!.style.setProperty("--main-bg-color", "##d9d9d9");
   chips += pot;
@@ -293,7 +296,7 @@ function betPulseOff() {
 
 function showResult(result: string) {
   switch (result) {
-    case "House Wins":
+    case "House wins":
       lose();
       break;
     case "Draw":
@@ -312,7 +315,6 @@ function showResult(result: string) {
       win();
       break;
   }
-  playOver();
   alertUser(result);
 }
 
