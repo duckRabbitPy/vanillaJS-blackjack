@@ -243,6 +243,8 @@ function playOver() {
     displayHouseScore!.style.visibility = "visible";
     playIsOver = true;
   } else {
+    houseResult!.style.visibility = "visible";
+    displayHouseScore!.style.visibility = "visible";
     restart!.classList.remove("hide");
   }
 
@@ -256,11 +258,11 @@ function playOver() {
 }
 
 function win() {
+  chips += pot * 2;
   playOver();
   winSoundFunc();
   root!.style.setProperty("--main-bg-color", "#90EE90");
   firstDraw!.disabled = true;
-  chips += pot * 2;
   displayChips!.textContent = String(chips);
   pot = 0;
   displayPot!.textContent = String(pot);
@@ -281,12 +283,12 @@ function lose() {
 }
 
 function draw() {
+  chips += pot;
+  pot = 0;
   playOver();
   loseSoundFunc();
   root!.style.setProperty("--main-bg-color", "##d9d9d9");
-  chips += pot;
   displayChips!.textContent = String(chips);
-  pot = 0;
   displayPot!.textContent = String(pot);
   firstDraw!.disabled = true;
 }
@@ -306,6 +308,7 @@ function betPulseOff() {
 }
 
 function showResult(result: string) {
+  alertUser(result);
   switch (result) {
     case "House wins":
       lose();
@@ -326,7 +329,6 @@ function showResult(result: string) {
       win();
       break;
   }
-  alertUser(result);
 }
 
 function alertUser(str: string) {
