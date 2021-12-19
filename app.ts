@@ -48,8 +48,10 @@ const applauseSound = document.querySelector(
 ) as HTMLAudioElement;
 const clickSound = document.querySelector(".clickSound") as HTMLAudioElement;
 
-const stylebox = document.querySelector("body");
-const hideableSection = document.querySelector(".toggle-section");
+const stylebox = document.querySelector("body") as HTMLBodyElement;
+const hideableSection = document.querySelector(
+  ".toggle-section"
+) as HTMLElement;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,10 +68,10 @@ retrieveScores();
 let deck: { suit: string; value: string | number }[] = [];
 let playerHand: (string | number)[] = [];
 let houseHand: (string | number)[] = [];
-let chips = 500;
-let pot = 0;
-let hands = 10;
-let playIsOver = false;
+let chips: number = 500;
+let pot: number = 0;
+let hands: number = 10;
+let playIsOver: boolean = false;
 
 //display starter chips and hands
 //non-null assertion operator to suppress TS concerns that element might be null
@@ -101,7 +103,8 @@ function init() {
     });
 }
 
-function placeBet(amount = "bet10") {
+function placeBet(amount: string) {
+  //default is bet 10
   let divisor = 10;
   switch (amount) {
     case "bet10":
@@ -399,12 +402,13 @@ function toggleSection(btnType: string) {
 }
 
 function writeScoreToMemory(score: number) {
-  let currentHistory;
+  let currentHistory: number[] = [];
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
+    console.log(currentHistory);
   }
-  if (currentHistory) {
+  if (currentHistory.length > 0) {
     currentHistory.push(score);
     localStorage.setItem("storedHistory", JSON.stringify(currentHistory));
     retrieveScores();
@@ -415,7 +419,7 @@ function writeScoreToMemory(score: number) {
 }
 
 function retrieveScores() {
-  let currentHistory;
+  let currentHistory: number[] = [];
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
@@ -424,7 +428,7 @@ function retrieveScores() {
     leaderboard!.firstChild.remove();
   }
 
-  if (currentHistory) {
+  if (currentHistory.length > 0) {
     let sortedHistory = currentHistory.sort((a: number, b: number) => b - a);
     sortedHistory.forEach((score: number, index: number) => {
       let li = document.createElement("li");

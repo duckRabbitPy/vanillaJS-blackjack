@@ -14,7 +14,7 @@ function standResult(
 
     //if house hand is over 21
     if (sumHand(houseHand) > 21) {
-      //if hand has an ace
+      //if househand has an ace
       if (houseHand.includes("A")) {
         if (lowScore > 21) {
           return "House bust, you win!";

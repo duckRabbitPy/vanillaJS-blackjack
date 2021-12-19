@@ -80,7 +80,7 @@ function init() {
     });
 }
 function placeBet(amount) {
-    if (amount === void 0) { amount = "bet10"; }
+    //default is bet 10
     var divisor = 10;
     switch (amount) {
         case "bet10":
@@ -334,12 +334,13 @@ function toggleSection(btnType) {
     }
 }
 function writeScoreToMemory(score) {
-    var currentHistory;
+    var currentHistory = [];
     var stored = localStorage.getItem("storedHistory");
     if (stored) {
         currentHistory = JSON.parse(stored);
+        console.log(currentHistory);
     }
-    if (currentHistory) {
+    if (currentHistory.length > 0) {
         currentHistory.push(score);
         localStorage.setItem("storedHistory", JSON.stringify(currentHistory));
         retrieveScores();
@@ -350,7 +351,7 @@ function writeScoreToMemory(score) {
     }
 }
 function retrieveScores() {
-    var currentHistory;
+    var currentHistory = [];
     var stored = localStorage.getItem("storedHistory");
     if (stored) {
         currentHistory = JSON.parse(stored);
@@ -358,7 +359,7 @@ function retrieveScores() {
     while (leaderboard.firstChild) {
         leaderboard.firstChild.remove();
     }
-    if (currentHistory) {
+    if (currentHistory.length > 0) {
         var sortedHistory = currentHistory.sort(function (a, b) { return b - a; });
         sortedHistory.forEach(function (score, index) {
             var li = document.createElement("li");
