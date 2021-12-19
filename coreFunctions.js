@@ -60,12 +60,10 @@ function standResult(playerHand, houseHand) {
             houseHand.length === 2 &&
             playerHand.length !== 2) {
             return "House got blackJack!";
-            //else must be a draw
-        }
-        else {
-            return "Draw";
         }
     }
+    //else must be a draw
+    return "Draw";
 }
 function hitResult(playerHand) {
     var score = sumHand(playerHand);

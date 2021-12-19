@@ -1,44 +1,52 @@
 //get DOM elements
-var root = document.querySelector(":root");
-const playerResult = document.querySelector(".playerList");
-const houseResult = document.querySelector(".houseList");
-const face = document.getElementById("face");
-const userMessage = document.getElementById("user-message");
+var root = document.querySelector(":root") as HTMLElement;
+const playerResult = document.querySelector(".playerList") as HTMLElement;
+const houseResult = document.querySelector(".houseList") as HTMLElement;
+const face = document.getElementById("face") as HTMLElement;
+const userMessage = document.getElementById("user-message") as HTMLElement;
 
-let help = document.getElementById("help");
-let helpDisplay = document.getElementById("help_info");
-let scoreboard = document.getElementById("scoreboard");
-let scoreboardDisplay = document.getElementById("scoreboard_info");
-let leaderboard = document.getElementById("leaderboard");
-let backBtn = document.getElementById("back_btn");
+let help = document.getElementById("help") as HTMLElement;
+let helpDisplay = document.getElementById("help_info") as HTMLElement;
+let scoreboard = document.getElementById("scoreboard") as HTMLElement;
+let scoreboardDisplay = document.getElementById(
+  "scoreboard_info"
+) as HTMLElement;
+let leaderboard = document.getElementById("leaderboard") as HTMLElement;
+let backBtn = document.getElementById("back_btn") as HTMLElement;
 
-let displayChips = document.getElementById("chips");
-let displayPot = document.getElementById("pot");
-let displayScore = document.getElementById("score");
-let displayHouseScore = document.getElementById("houseScore");
-let displayRemaining = document.getElementById("hands");
+let displayChips = document.getElementById("chips") as HTMLElement;
+let displayPot = document.getElementById("pot") as HTMLElement;
+let displayScore = document.getElementById("score") as HTMLElement;
+let displayHouseScore = document.getElementById("houseScore") as HTMLElement;
+let displayRemaining = document.getElementById("hands") as HTMLElement;
 
-const firstDraw = document.querySelector(".draw2");
-const hit = document.querySelector(".draw1");
-const stand = document.querySelector(".stand");
-const doubleD = document.querySelector(".doubleD");
-const nxtGame = document.querySelector(".replay");
-const restart = document.querySelector(".restart");
+const firstDraw = document.querySelector(".draw2") as HTMLButtonElement;
+const hit = document.querySelector(".draw1") as HTMLButtonElement;
+const stand = document.querySelector(".stand") as HTMLButtonElement;
+const doubleD = document.querySelector(".doubleD") as HTMLButtonElement;
+const nxtGame = document.querySelector(".replay") as HTMLButtonElement;
+const restart = document.querySelector(".restart") as HTMLButtonElement;
 
-const bet10P = document.querySelector(".bet10P");
-const bet20P = document.querySelector(".bet20P");
-const bet33P = document.querySelector(".bet33P");
-const betAllP = document.querySelector(".betAllP");
+const bet10P = document.querySelector(".bet10P") as HTMLButtonElement;
+const bet20P = document.querySelector(".bet20P") as HTMLButtonElement;
+const bet33P = document.querySelector(".bet33P") as HTMLButtonElement;
+const betAllP = document.querySelector(".betAllP") as HTMLButtonElement;
 
-const drawSound = document.querySelector(".drawCardSound");
-const newCardSound = document.querySelector(".newCardSound");
-const standSound = document.querySelector(".standSound");
-const chipSound = document.querySelector(".chipSound");
-const winSound = document.querySelector(".winSound");
-const loseSound = document.querySelector(".loseSound");
-const gameOverSound = document.querySelector(".gameOverSound");
-const applauseSound = document.querySelector(".applauseSound");
-const clickSound = document.querySelector(".clickSound");
+const drawSound = document.querySelector(".drawCardSound") as HTMLAudioElement;
+const newCardSound = document.querySelector(
+  ".newCardSound"
+) as HTMLAudioElement;
+const standSound = document.querySelector(".standSound") as HTMLAudioElement;
+const chipSound = document.querySelector(".chipSound") as HTMLAudioElement;
+const winSound = document.querySelector(".winSound") as HTMLAudioElement;
+const loseSound = document.querySelector(".loseSound") as HTMLAudioElement;
+const gameOverSound = document.querySelector(
+  ".gameOverSound"
+) as HTMLAudioElement;
+const applauseSound = document.querySelector(
+  ".applauseSound"
+) as HTMLAudioElement;
+const clickSound = document.querySelector(".clickSound") as HTMLAudioElement;
 
 const stylebox = document.querySelector("body");
 const hideableSection = document.querySelector(".toggle-section");
@@ -391,7 +399,11 @@ function toggleSection(btnType: string) {
 }
 
 function writeScoreToMemory(score: number) {
-  let currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+  let currentHistory;
+  let stored = localStorage.getItem("storedHistory");
+  if (stored) {
+    currentHistory = JSON.parse(stored);
+  }
   if (currentHistory) {
     currentHistory.push(score);
     localStorage.setItem("storedHistory", JSON.stringify(currentHistory));
@@ -403,7 +415,11 @@ function writeScoreToMemory(score: number) {
 }
 
 function retrieveScores() {
-  let currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+  let currentHistory;
+  let stored = localStorage.getItem("storedHistory");
+  if (stored) {
+    currentHistory = JSON.parse(stored);
+  }
   while (leaderboard!.firstChild) {
     leaderboard!.firstChild.remove();
   }
@@ -573,7 +589,7 @@ doubleD!.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
-  let hotBtn: Element;
+  let hotBtn: HTMLElement = bet10P;
 
   switch (event.key) {
     case "1":
@@ -605,7 +621,7 @@ document.addEventListener("keydown", (event) => {
       break;
   }
 
-  if (event.ctrlKey) {
+  if (event.ctrlKey && hotBtn) {
     try {
       hotBtn.click();
       hotBtn.classList.add("flash");
