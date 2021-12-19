@@ -193,6 +193,8 @@ function playOver() {
         playIsOver = true;
     }
     else {
+        houseResult.style.visibility = "visible";
+        displayHouseScore.style.visibility = "visible";
         restart.classList.remove("hide");
     }
     if (hands <= 1) {
@@ -249,6 +251,7 @@ function betPulseOff() {
     betAllP.classList.remove("pulse");
 }
 function showResult(result) {
+    alertUser(result);
     switch (result) {
         case "House wins":
             lose();
@@ -269,7 +272,6 @@ function showResult(result) {
             win();
             break;
     }
-    alertUser(result);
 }
 function alertUser(str) {
     userMessage.innerHTML = str;

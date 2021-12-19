@@ -243,6 +243,8 @@ function playOver() {
     displayHouseScore!.style.visibility = "visible";
     playIsOver = true;
   } else {
+    houseResult!.style.visibility = "visible";
+    displayHouseScore!.style.visibility = "visible";
     restart!.classList.remove("hide");
   }
 
@@ -306,6 +308,7 @@ function betPulseOff() {
 }
 
 function showResult(result: string) {
+  alertUser(result);
   switch (result) {
     case "House wins":
       lose();
@@ -326,7 +329,6 @@ function showResult(result: string) {
       win();
       break;
   }
-  alertUser(result);
 }
 
 function alertUser(str: string) {
