@@ -334,7 +334,11 @@ function toggleSection(btnType) {
     }
 }
 function writeScoreToMemory(score) {
-    var currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+    var currentHistory;
+    var stored = localStorage.getItem("storedHistory");
+    if (stored) {
+        currentHistory = JSON.parse(stored);
+    }
     if (currentHistory) {
         currentHistory.push(score);
         localStorage.setItem("storedHistory", JSON.stringify(currentHistory));
@@ -346,7 +350,11 @@ function writeScoreToMemory(score) {
     }
 }
 function retrieveScores() {
-    var currentHistory = JSON.parse(localStorage.getItem("storedHistory"));
+    var currentHistory;
+    var stored = localStorage.getItem("storedHistory");
+    if (stored) {
+        currentHistory = JSON.parse(stored);
+    }
     while (leaderboard.firstChild) {
         leaderboard.firstChild.remove();
     }
@@ -488,7 +496,7 @@ doubleD.addEventListener("click", function () {
     doubleDown();
 });
 document.addEventListener("keydown", function (event) {
-    var hotBtn;
+    var hotBtn = bet10P;
     switch (event.key) {
         case "1":
             hotBtn = bet10P;
@@ -518,7 +526,7 @@ document.addEventListener("keydown", function (event) {
             hotBtn = nxtGame;
             break;
     }
-    if (event.ctrlKey) {
+    if (event.ctrlKey && hotBtn) {
         try {
             hotBtn.click();
             hotBtn.classList.add("flash");

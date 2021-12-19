@@ -63,12 +63,10 @@ function standResult(
       playerHand.length !== 2
     ) {
       return "House got blackJack!";
-
-      //else must be a draw
-    } else {
-      return "Draw";
     }
   }
+  //else must be a draw
+  return "Draw";
 }
 
 function hitResult(playerHand: (number | string)[]) {
