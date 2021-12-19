@@ -256,11 +256,11 @@ function playOver() {
 }
 
 function win() {
+  chips += pot * 2;
   playOver();
   winSoundFunc();
   root!.style.setProperty("--main-bg-color", "#90EE90");
   firstDraw!.disabled = true;
-  chips += pot * 2;
   displayChips!.textContent = String(chips);
   pot = 0;
   displayPot!.textContent = String(pot);
@@ -281,12 +281,12 @@ function lose() {
 }
 
 function draw() {
+  chips += pot;
+  pot = 0;
   playOver();
   loseSoundFunc();
   root!.style.setProperty("--main-bg-color", "##d9d9d9");
-  chips += pot;
   displayChips!.textContent = String(chips);
-  pot = 0;
   displayPot!.textContent = String(pot);
   firstDraw!.disabled = true;
 }

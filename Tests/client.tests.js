@@ -110,4 +110,17 @@ function runTests() {
     displayPot.innerHTML = "0";
     pot = 0;
   });
+
+  test("Bet all and Win", () => {
+    //TODO
+    betAllP.click();
+    playerHand = ["A", "K"];
+    houseHand = [10, 6];
+    standFunc();
+    showResult(playerHand);
+    showResult(houseHand);
+    //reset pot to 0 for other tests
+    displayPot.innerHTML = "0";
+    pot = 0;
+  });
 }
