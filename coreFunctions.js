@@ -1,7 +1,10 @@
 function standResult(playerHand, houseHand) {
+    if (sumHandLowAce(playerHand) > 21) {
+        return "BUST!";
+    }
     if (playerHand.includes("A") && sumHand(playerHand) === 22) {
         //player has foolishly chosen to stand on pocket Aces
-        return "House Wins";
+        return "House wins";
     }
     else {
         //set low ace score
@@ -15,11 +18,11 @@ function standResult(playerHand, houseHand) {
                 }
                 //if ace low house hand higher than player hand, house wins
                 else if (lowScore > sumHand(playerHand)) {
-                    return "House Wins";
+                    return "House wins";
                     //if ace low house hand lower than player hand, player wins
                 }
                 else if (lowScore < sumHand(playerHand)) {
-                    return "You Win";
+                    return "You win";
                 }
             }
             else {
@@ -29,7 +32,7 @@ function standResult(playerHand, houseHand) {
         }
         //if house has higher hand than player (and house is under 21)
         else if (sumHand(houseHand) > sumHand(playerHand)) {
-            return "House Wins";
+            return "House wins";
         }
         //else if house has lower hand than player:
         else if (sumHand(houseHand) < sumHand(playerHand)) {
@@ -49,7 +52,7 @@ function standResult(playerHand, houseHand) {
             }
             //player loses if has low aces and lower than househand
             else if (Ascore < 22 && Ascore < sumHand(houseHand)) {
-                return "House Wins!";
+                return "House wins";
             }
             // if there is a draw but house has blackJack
         }
