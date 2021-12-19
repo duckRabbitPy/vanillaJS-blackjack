@@ -34,7 +34,7 @@ test("exampleA11", () => {
 });
 
 test("exampleB1", () => {
-  equal(hitResult([10, 7, 2]), "Continue");
+  equal(hitResult([10, 7, 2]), "Hit, stand or double down?");
 });
 test("exampleB2", () => {
   equal(hitResult([10, 10, 5]), "BUST!");
