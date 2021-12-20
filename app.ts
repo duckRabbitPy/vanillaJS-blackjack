@@ -47,8 +47,6 @@ const applauseSound = document.querySelector(
   ".applauseSound"
 ) as HTMLAudioElement;
 const clickSound = document.querySelector(".clickSound") as HTMLAudioElement;
-
-const stylebox = document.querySelector("body") as HTMLBodyElement;
 const hideableSection = document.querySelector(
   ".toggle-section"
 ) as HTMLElement;
@@ -71,7 +69,6 @@ let houseHand: (string | number)[] = [];
 let chips: number = 500;
 let pot: number = 0;
 let hands: number = 10;
-let playIsOver: boolean = false;
 
 //display starter chips and hands
 //non-null assertion operator to suppress TS concerns that element might be null
@@ -241,7 +238,6 @@ function playOver() {
     nxtGame!.disabled = false;
     houseResult!.style.visibility = "visible";
     displayHouseScore!.style.visibility = "visible";
-    playIsOver = true;
   } else {
     houseResult!.style.visibility = "visible";
     displayHouseScore!.style.visibility = "visible";
@@ -521,7 +517,6 @@ nxtGame!.addEventListener("click", () => {
 
   hands -= 1;
   displayRemaining!.textContent = String(hands);
-  playIsOver = false;
 
   playerResult!.innerHTML = "";
   houseResult!.style.visibility = "hidden";
@@ -549,7 +544,7 @@ nxtGame!.addEventListener("click", () => {
 });
 
 restart!.addEventListener("click", () => {
-  location.reload();
+  window.location.reload();
 });
 
 scoreboard!.addEventListener("click", () => {
