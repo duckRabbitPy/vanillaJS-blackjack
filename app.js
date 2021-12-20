@@ -34,7 +34,6 @@ var loseSound = document.querySelector(".loseSound");
 var gameOverSound = document.querySelector(".gameOverSound");
 var applauseSound = document.querySelector(".applauseSound");
 var clickSound = document.querySelector(".clickSound");
-var stylebox = document.querySelector("body");
 var hideableSection = document.querySelector(".toggle-section");
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +51,6 @@ var houseHand = [];
 var chips = 500;
 var pot = 0;
 var hands = 10;
-var playIsOver = false;
 //display starter chips and hands
 //non-null assertion operator to suppress TS concerns that element might be null
 displayChips.textContent = String(chips);
@@ -190,7 +188,6 @@ function playOver() {
         nxtGame.disabled = false;
         houseResult.style.visibility = "visible";
         displayHouseScore.style.visibility = "visible";
-        playIsOver = true;
     }
     else {
         houseResult.style.visibility = "visible";
@@ -439,7 +436,6 @@ nxtGame.addEventListener("click", function () {
     init();
     hands -= 1;
     displayRemaining.textContent = String(hands);
-    playIsOver = false;
     playerResult.innerHTML = "";
     houseResult.style.visibility = "hidden";
     face.textContent = "";
@@ -462,7 +458,7 @@ nxtGame.addEventListener("click", function () {
     alertUser("Place your bet to start");
 });
 restart.addEventListener("click", function () {
-    location.reload();
+    window.location.reload();
 });
 scoreboard.addEventListener("click", function () {
     clickSoundFunc();

@@ -1,3 +1,4 @@
+"use strict";
 function standResult(playerHand, houseHand) {
     if (sumHandLowAce(playerHand) > 21) {
         return "BUST!";
@@ -8,7 +9,7 @@ function standResult(playerHand, houseHand) {
     }
     else {
         //set low ace score
-        var lowScore = sumHandLowAce(houseHand);
+        let lowScore = sumHandLowAce(houseHand);
         //if house hand is over 21
         if (sumHand(houseHand) > 21) {
             //if househand has an ace
@@ -36,8 +37,8 @@ function standResult(playerHand, houseHand) {
         }
         //else if house has lower hand than player:
         else if (sumHand(houseHand) < sumHand(playerHand)) {
-            var score = sumHand(playerHand);
-            var Ascore = sumHandLowAce(playerHand);
+            let score = sumHand(playerHand);
+            let Ascore = sumHandLowAce(playerHand);
             //player is bust if over 21 without aces
             if (score > 21 && !playerHand.includes("A")) {
                 return "Bust, house wins";
@@ -66,12 +67,12 @@ function standResult(playerHand, houseHand) {
     return "Draw";
 }
 function hitResult(playerHand) {
-    var score = sumHand(playerHand);
+    let score = sumHand(playerHand);
     if (score > 21 && !playerHand.includes("A")) {
         return "BUST!";
     }
     else {
-        var Ascore = sumHandLowAce(playerHand);
+        let Ascore = sumHandLowAce(playerHand);
         if (Ascore > 21) {
             return "BUST!";
         }
@@ -84,9 +85,9 @@ function hitResult(playerHand) {
     }
 }
 function sumHandLowAce(hand) {
-    var total = 0;
-    for (var x = 0; x < hand.length; x++) {
-        var currCard = hand[x];
+    let total = 0;
+    for (let x = 0; x < hand.length; x++) {
+        let currCard = hand[x];
         if (typeof currCard === "number") {
             total += currCard;
         }
@@ -110,9 +111,9 @@ function sumHandLowAce(hand) {
     return total;
 }
 function sumHand(hand) {
-    var total = 0;
-    for (var x = 0; x < hand.length; x++) {
-        var currCard = hand[x];
+    let total = 0;
+    for (let x = 0; x < hand.length; x++) {
+        let currCard = hand[x];
         if (typeof currCard === "number") {
             total += currCard;
         }
