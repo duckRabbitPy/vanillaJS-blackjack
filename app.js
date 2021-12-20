@@ -1,40 +1,42 @@
+"use strict";
 //get DOM elements
 var root = document.querySelector(":root");
-var playerResult = document.querySelector(".playerList");
-var houseResult = document.querySelector(".houseList");
-var face = document.getElementById("face");
-var userMessage = document.getElementById("user-message");
-var help = document.getElementById("help");
-var helpDisplay = document.getElementById("help_info");
-var scoreboard = document.getElementById("scoreboard");
-var scoreboardDisplay = document.getElementById("scoreboard_info");
-var leaderboard = document.getElementById("leaderboard");
-var backBtn = document.getElementById("back_btn");
-var displayChips = document.getElementById("chips");
-var displayPot = document.getElementById("pot");
-var displayScore = document.getElementById("score");
-var displayHouseScore = document.getElementById("houseScore");
-var displayRemaining = document.getElementById("hands");
-var firstDraw = document.querySelector(".draw2");
-var hit = document.querySelector(".draw1");
-var stand = document.querySelector(".stand");
-var doubleD = document.querySelector(".doubleD");
-var nxtGame = document.querySelector(".replay");
-var restart = document.querySelector(".restart");
-var bet10P = document.querySelector(".bet10P");
-var bet20P = document.querySelector(".bet20P");
-var bet33P = document.querySelector(".bet33P");
-var betAllP = document.querySelector(".betAllP");
-var drawSound = document.querySelector(".drawCardSound");
-var newCardSound = document.querySelector(".newCardSound");
-var standSound = document.querySelector(".standSound");
-var chipSound = document.querySelector(".chipSound");
-var winSound = document.querySelector(".winSound");
-var loseSound = document.querySelector(".loseSound");
-var gameOverSound = document.querySelector(".gameOverSound");
-var applauseSound = document.querySelector(".applauseSound");
-var clickSound = document.querySelector(".clickSound");
-var hideableSection = document.querySelector(".toggle-section");
+const playerResult = document.querySelector(".playerList");
+const houseResult = document.querySelector(".houseList");
+const face = document.getElementById("face");
+const userMessage = document.getElementById("user-message");
+let help = document.getElementById("help");
+let helpDisplay = document.getElementById("help_info");
+let scoreboard = document.getElementById("scoreboard");
+let scoreboardDisplay = document.getElementById("scoreboard_info");
+let localLeaderboard = document.getElementById("localLeaderboard");
+let publicLeaderboard = document.getElementById("publicLeaderboard");
+let backBtn = document.getElementById("back_btn");
+let displayChips = document.getElementById("chips");
+let displayPot = document.getElementById("pot");
+let displayScore = document.getElementById("score");
+let displayHouseScore = document.getElementById("houseScore");
+let displayRemaining = document.getElementById("hands");
+const firstDraw = document.querySelector(".draw2");
+const hit = document.querySelector(".draw1");
+const stand = document.querySelector(".stand");
+const doubleD = document.querySelector(".doubleD");
+const nxtGame = document.querySelector(".replay");
+const restart = document.querySelector(".restart");
+const bet10P = document.querySelector(".bet10P");
+const bet20P = document.querySelector(".bet20P");
+const bet33P = document.querySelector(".bet33P");
+const betAllP = document.querySelector(".betAllP");
+const drawSound = document.querySelector(".drawCardSound");
+const newCardSound = document.querySelector(".newCardSound");
+const standSound = document.querySelector(".standSound");
+const chipSound = document.querySelector(".chipSound");
+const winSound = document.querySelector(".winSound");
+const loseSound = document.querySelector(".loseSound");
+const gameOverSound = document.querySelector(".gameOverSound");
+const applauseSound = document.querySelector(".applauseSound");
+const clickSound = document.querySelector(".clickSound");
+const hideableSection = document.querySelector(".toggle-section");
 /*
 |--------------------------------------------------------------------------
 | Game setup
@@ -44,13 +46,14 @@ var hideableSection = document.querySelector(".toggle-section");
 */
 //retrieve top scores from local
 retrieveScores();
+collectPublicScores();
 //set up global variables
-var deck = [];
-var playerHand = [];
-var houseHand = [];
-var chips = 500;
-var pot = 0;
-var hands = 10;
+let deck = [];
+let playerHand = [];
+let houseHand = [];
+let chips = 500;
+let pot = 0;
+let hands = 10;
 //display starter chips and hands
 //non-null assertion operator to suppress TS concerns that element might be null
 displayChips.textContent = String(chips);
@@ -72,14 +75,14 @@ betPulseOn();
 //init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
     fetch("/deck.json")
-        .then(function (response) { return response.json(); })
-        .then(function (cards) {
+        .then((response) => response.json())
+        .then((cards) => {
         deck = cards;
     });
 }
 function placeBet(amount) {
     //default is bet 10
-    var divisor = 10;
+    let divisor = 10;
     switch (amount) {
         case "bet10":
             divisor = 10;
@@ -94,7 +97,7 @@ function placeBet(amount) {
             divisor = 1;
             break;
     }
-    var bet = Math.floor(chips / divisor);
+    let bet = Math.floor(chips / divisor);
     chipSoundFunc();
     chips -= bet;
     pot += bet;
@@ -107,7 +110,7 @@ function doubleDown() {
         alertUser("You do not have enough chips to double down");
     }
     else {
-        var bet = pot;
+        let bet = pot;
         chips -= bet;
         pot += bet;
         displayChips.textContent = String(chips);
@@ -118,16 +121,16 @@ function doubleDown() {
 }
 //pulls n num of cards out of deck and adds to hand
 function getCards(deck, numOfCards, reciever) {
-    var result = [];
-    for (var x = 0; x < numOfCards; x++) {
-        var index = Math.floor(Math.random() * Math.floor(deck.length));
+    let result = [];
+    for (let x = 0; x < numOfCards; x++) {
+        let index = Math.floor(Math.random() * Math.floor(deck.length));
         //push card at chosen index to newHand and remove from deck
         if (reciever === "player") {
-            var newHand = playerHand.concat(deck[index].value);
+            let newHand = playerHand.concat(deck[index].value);
             playerHand = newHand;
         }
         else if (reciever === "house") {
-            var newHouseHand = houseHand.concat(deck[index].value);
+            let newHouseHand = houseHand.concat(deck[index].value);
             houseHand = newHouseHand;
         }
         result.push(String(deck[index].value) + deck[index].suit);
@@ -138,7 +141,11 @@ function getCards(deck, numOfCards, reciever) {
 }
 //define function that when called adds new card to player/house innerHMTL
 function revealCard(newCard, reciever) {
-    var html = "\n\n     ".concat(newCard, "\n    \n    ");
+    const html = `
+
+     ${newCard}
+    
+    `;
     if (reciever === "player") {
         playerResult.innerHTML += html;
     }
@@ -149,17 +156,17 @@ function revealCard(newCard, reciever) {
 //adds new card to player hand
 function hitFunc() {
     newCardSoundFunc();
-    var card = getCards(deck, 1, "player");
+    let card = getCards(deck, 1, "player");
     revealCard(card, "player");
-    var score = sumHand(playerHand);
+    let score = sumHand(playerHand);
     doubleD.disabled = true;
-    var result = hitResult(playerHand);
+    let result = hitResult(playerHand);
     showResult(result);
     if (score > 21 && !playerHand.includes("A")) {
         displayScore.textContent = String(score);
     }
     else {
-        var Ascore = sumHandLowAce(playerHand);
+        let Ascore = sumHandLowAce(playerHand);
         displayScore.textContent = String(Ascore);
     }
     if (playerHand.length > 4) {
@@ -171,12 +178,12 @@ function standFunc() {
     standSoundFunc();
     doubleD.disabled = true;
     while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
-        var card = getCards(deck, 1, "house");
+        let card = getCards(deck, 1, "house");
         revealCard(card, "house");
-        var houseScore = sumHand(houseHand);
+        let houseScore = sumHand(houseHand);
         displayHouseScore.textContent = String(houseScore);
     }
-    var result = standResult(playerHand, houseHand);
+    let result = standResult(playerHand, houseHand);
     showResult(result);
 }
 function playOver() {
@@ -196,8 +203,9 @@ function playOver() {
     }
     if (hands <= 1) {
         applauseSoundFunc();
-        alertUser("Game over! You leave with $".concat(chips));
+        alertUser(`Game over! You leave with $${chips}`);
         writeScoreToMemory(chips);
+        savePublicScore(chips);
         disableAll();
         restart.classList.remove("hide");
     }
@@ -333,11 +341,10 @@ function toggleSection(btnType) {
     }
 }
 function writeScoreToMemory(score) {
-    var currentHistory = [];
-    var stored = localStorage.getItem("storedHistory");
+    let currentHistory = [];
+    let stored = localStorage.getItem("storedHistory");
     if (stored) {
         currentHistory = JSON.parse(stored);
-        console.log(currentHistory);
     }
     if (currentHistory.length > 0) {
         currentHistory.push(score);
@@ -350,30 +357,77 @@ function writeScoreToMemory(score) {
     }
 }
 function retrieveScores() {
-    var currentHistory = [];
-    var stored = localStorage.getItem("storedHistory");
+    let currentHistory = [];
+    let stored = localStorage.getItem("storedHistory");
     if (stored) {
         currentHistory = JSON.parse(stored);
     }
-    while (leaderboard.firstChild) {
-        leaderboard.firstChild.remove();
+    while (localLeaderboard.firstChild) {
+        localLeaderboard.firstChild.remove();
     }
     if (currentHistory.length > 0) {
-        var sortedHistory = currentHistory.sort(function (a, b) { return b - a; });
-        sortedHistory.forEach(function (score, index) {
-            var li = document.createElement("li");
+        let sortedHistory = currentHistory.sort((a, b) => b - a);
+        sortedHistory = sortedHistory.slice(0, 10);
+        console.log(sortedHistory);
+        sortedHistory.forEach((score, index) => {
+            let li = document.createElement("li");
             if (index === 0) {
-                li.appendChild(document.createTextNode("".concat(score, " (Personal best! \uD83D\uDD25)")));
+                li.appendChild(document.createTextNode(`${score} (Personal best! 🔥)`));
             }
             else {
                 li.appendChild(document.createTextNode(String(score)));
             }
-            leaderboard.appendChild(li);
+            localLeaderboard.appendChild(li);
         });
     }
     else {
-        leaderboard.appendChild(document.createTextNode("Complete 10 rounds of BlackJack with a score above 0 to record your score"));
+        localLeaderboard.appendChild(document.createTextNode("Complete 10 rounds of BlackJack with a score above 0 to record your score"));
     }
+}
+function savePublicScore(finalChips) {
+    let newObj = { username: "Anon", score: finalChips };
+    fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`, {
+        method: "POST",
+        body: JSON.stringify(newObj),
+        headers: { "Content-Type": "application/json" },
+    })
+        .then((res) => {
+        if (!res.ok) {
+            throw new Error("Put request failed");
+        }
+        collectPublicScores();
+    })
+        .catch((err) => {
+        console.log(err);
+    });
+}
+function collectPublicScores() {
+    fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
+        .then((res) => {
+        if (!res.ok) {
+            throw new Error("Get request failed");
+        }
+        return res.json();
+    })
+        .then((data) => {
+        let savedScores = Object.values(data);
+        console.log(savedScores);
+        let orderedScores = savedScores.sort((a, b) => a.score > b.score ? -1 : 1);
+        orderedScores = orderedScores.slice(0, 10);
+        orderedScores.forEach((obj, index) => {
+            let li = document.createElement("li");
+            if (index === 0) {
+                li.appendChild(document.createTextNode(`${obj.score}: ${obj.username} (the GOAT! 🐐👑)`));
+            }
+            else {
+                li.appendChild(document.createTextNode(`${String(obj.score)}: ${obj.username}`));
+                publicLeaderboard.appendChild(li);
+            }
+        });
+    })
+        .catch((err) => {
+        console.log(err);
+    });
 }
 /*
 |--------------------------------------------------------------------------
@@ -383,7 +437,7 @@ function retrieveScores() {
 |
 */
 //draws two cards for player and house and acts if blackjack present
-firstDraw.addEventListener("click", function () {
+firstDraw.addEventListener("click", () => {
     drawSoundFunc();
     alertUser("Hit, stand or double down?");
     hit.disabled = false;
@@ -396,14 +450,14 @@ firstDraw.addEventListener("click", function () {
     doubleD.disabled = false;
     //turn off betting pulse
     betPulseOff();
-    var cards = getCards(deck, 2, "player");
+    let cards = getCards(deck, 2, "player");
     revealCard(cards, "player");
-    var score = sumHand(playerHand);
+    let score = sumHand(playerHand);
     displayScore.textContent = String(score);
-    var houseCards = getCards(deck, 2, "house");
+    let houseCards = getCards(deck, 2, "house");
     revealCard(houseCards, "house");
     face.textContent = houseCards[0];
-    var houseScore = sumHand(houseHand);
+    let houseScore = sumHand(houseHand);
     displayHouseScore.textContent = String(houseScore);
     firstDraw.disabled = true;
     if (score === 21 && houseScore === 21) {
@@ -418,20 +472,20 @@ firstDraw.addEventListener("click", function () {
     }
     else if (playerHand.includes("A") && sumHand(playerHand) === 22) {
         //player has foolishly chosen to stand on pocket Aces
-        var pocketAces = sumHandLowAce(playerHand);
+        let pocketAces = sumHandLowAce(playerHand);
         displayScore.textContent = String(pocketAces);
     }
 });
 //draws one card for player
-hit.addEventListener("click", function () {
+hit.addEventListener("click", () => {
     hitFunc();
 });
 //make a stand, house must draw unless over 17
-stand.addEventListener("click", function () {
+stand.addEventListener("click", () => {
     standFunc();
 });
 //clears and resets for next game
-nxtGame.addEventListener("click", function () {
+nxtGame.addEventListener("click", () => {
     //resets deck
     init();
     hands -= 1;
@@ -457,45 +511,45 @@ nxtGame.addEventListener("click", function () {
     betPulseOn();
     alertUser("Place your bet to start");
 });
-restart.addEventListener("click", function () {
+restart.addEventListener("click", () => {
     window.location.reload();
 });
-scoreboard.addEventListener("click", function () {
+scoreboard.addEventListener("click", () => {
     clickSoundFunc();
     toggleSection("scoreboard");
 });
-help.addEventListener("click", function () {
+help.addEventListener("click", () => {
     clickSoundFunc();
     toggleSection("help");
 });
-backBtn.addEventListener("click", function () {
+backBtn.addEventListener("click", () => {
     clickSoundFunc();
     toggleSection("back");
 });
 //betting buttons
-bet10P.addEventListener("click", function () {
+bet10P.addEventListener("click", () => {
     // bet10();
     placeBet("bet10");
     firstDraw.disabled = false;
 });
-bet20P.addEventListener("click", function () {
+bet20P.addEventListener("click", () => {
     placeBet("bet20");
     firstDraw.disabled = false;
 });
-bet33P.addEventListener("click", function () {
+bet33P.addEventListener("click", () => {
     placeBet("bet33");
     firstDraw.disabled = false;
 });
-betAllP.addEventListener("click", function () {
+betAllP.addEventListener("click", () => {
     placeBet("betAll");
     firstDraw.disabled = false;
 });
-doubleD.addEventListener("click", function () {
+doubleD.addEventListener("click", () => {
     firstDraw.disabled = false;
     doubleDown();
 });
-document.addEventListener("keydown", function (event) {
-    var hotBtn = bet10P;
+document.addEventListener("keydown", (event) => {
+    let hotBtn = bet10P;
     switch (event.key) {
         case "1":
             hotBtn = bet10P;
@@ -529,7 +583,7 @@ document.addEventListener("keydown", function (event) {
         try {
             hotBtn.click();
             hotBtn.classList.add("flash");
-            window.setTimeout(function () {
+            window.setTimeout(() => {
                 hotBtn.classList.remove("flash");
             }, 200);
         }

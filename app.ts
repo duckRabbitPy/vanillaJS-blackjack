@@ -11,7 +11,12 @@ let scoreboard = document.getElementById("scoreboard") as HTMLElement;
 let scoreboardDisplay = document.getElementById(
   "scoreboard_info"
 ) as HTMLElement;
-let leaderboard = document.getElementById("leaderboard") as HTMLElement;
+let localLeaderboard = document.getElementById(
+  "localLeaderboard"
+) as HTMLElement;
+let publicLeaderboard = document.getElementById(
+  "publicLeaderboard"
+) as HTMLElement;
 let backBtn = document.getElementById("back_btn") as HTMLElement;
 
 let displayChips = document.getElementById("chips") as HTMLElement;
@@ -61,6 +66,7 @@ const hideableSection = document.querySelector(
 
 //retrieve top scores from local
 retrieveScores();
+collectPublicScores();
 
 //set up global variables
 let deck: { suit: string; value: string | number }[] = [];
@@ -248,6 +254,7 @@ function playOver() {
     applauseSoundFunc();
     alertUser(`Game over! You leave with $${chips}`);
     writeScoreToMemory(chips);
+    savePublicScore(chips);
     disableAll();
     restart!.classList.remove("hide");
   }
@@ -404,7 +411,6 @@ function writeScoreToMemory(score: number) {
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
-    console.log(currentHistory);
   }
   if (currentHistory.length > 0) {
     currentHistory.push(score);
@@ -422,12 +428,14 @@ function retrieveScores() {
   if (stored) {
     currentHistory = JSON.parse(stored);
   }
-  while (leaderboard!.firstChild) {
-    leaderboard!.firstChild.remove();
+  while (localLeaderboard!.firstChild) {
+    localLeaderboard!.firstChild.remove();
   }
 
   if (currentHistory.length > 0) {
     let sortedHistory = currentHistory.sort((a: number, b: number) => b - a);
+    sortedHistory = sortedHistory.slice(0, 10);
+    console.log(sortedHistory);
     sortedHistory.forEach((score: number, index: number) => {
       let li = document.createElement("li");
       if (index === 0) {
@@ -435,15 +443,78 @@ function retrieveScores() {
       } else {
         li.appendChild(document.createTextNode(String(score)));
       }
-      leaderboard!.appendChild(li);
+      localLeaderboard!.appendChild(li);
     });
   } else {
-    leaderboard!.appendChild(
+    localLeaderboard!.appendChild(
       document.createTextNode(
         "Complete 10 rounds of BlackJack with a score above 0 to record your score"
       )
     );
   }
+}
+
+function savePublicScore(finalChips: number) {
+  let newObj = { username: "Anon", score: finalChips };
+  fetch(
+    `https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`,
+    {
+      method: "POST",
+      body: JSON.stringify(newObj),
+      headers: { "Content-Type": "application/json" },
+    }
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Put request failed");
+      }
+      collectPublicScores();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+function collectPublicScores() {
+  //GET is default if not specified
+  interface ScoreObj {
+    score: number;
+    username: string;
+  }
+  fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Get request failed");
+      }
+      return res.json();
+    })
+    .then((data: { uid: ScoreObj }) => {
+      let savedScores = Object.values(data);
+      console.log(savedScores);
+
+      let orderedScores = savedScores.sort((a, b) =>
+        a.score > b.score ? -1 : 1
+      );
+      orderedScores = orderedScores.slice(0, 10);
+      orderedScores.forEach((obj, index) => {
+        let li = document.createElement("li");
+        if (index === 0) {
+          li.appendChild(
+            document.createTextNode(
+              `${obj.score}: ${obj.username} (the GOAT! 🐐👑)`
+            )
+          );
+        } else {
+          li.appendChild(
+            document.createTextNode(`${String(obj.score)}: ${obj.username}`)
+          );
+          publicLeaderboard!.appendChild(li);
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 /*
