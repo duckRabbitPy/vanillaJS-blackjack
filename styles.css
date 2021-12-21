@@ -29,6 +29,10 @@ h2 {
   font-weight: lighter;
 }
 
+.landing-heading {
+  font-size: xx-large;
+}
+
 .larger-text {
   font-size: larger;
 }

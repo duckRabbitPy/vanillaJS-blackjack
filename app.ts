@@ -435,7 +435,6 @@ function retrieveScores() {
   if (currentHistory.length > 0) {
     let sortedHistory = currentHistory.sort((a: number, b: number) => b - a);
     sortedHistory = sortedHistory.slice(0, 10);
-    console.log(sortedHistory);
     sortedHistory.forEach((score: number, index: number) => {
       let li = document.createElement("li");
       if (index === 0) {
@@ -498,7 +497,7 @@ function collectPublicScores() {
       let orderedScores = savedScores.sort((a, b) =>
         a.score > b.score ? -1 : 1
       );
-      orderedScores = orderedScores.slice(0, 11);
+      orderedScores = orderedScores.slice(0, 10);
       orderedScores.forEach((obj, index) => {
         let li = document.createElement("li");
         if (index === 0) {
@@ -511,8 +510,8 @@ function collectPublicScores() {
           li.appendChild(
             document.createTextNode(`${String(obj.score)}: ${obj.username}`)
           );
-          publicLeaderboard!.appendChild(li);
         }
+        publicLeaderboard!.appendChild(li);
       });
     })
     .catch((err) => {
