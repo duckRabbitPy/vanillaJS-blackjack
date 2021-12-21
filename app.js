@@ -402,6 +402,9 @@ function savePublicScore(finalChips) {
     });
 }
 function collectPublicScores() {
+    while (publicLeaderboard.firstChild) {
+        publicLeaderboard.firstChild.remove();
+    }
     fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
         .then((res) => {
         if (!res.ok) {
@@ -413,7 +416,7 @@ function collectPublicScores() {
         let savedScores = Object.values(data);
         console.log(savedScores);
         let orderedScores = savedScores.sort((a, b) => a.score > b.score ? -1 : 1);
-        orderedScores = orderedScores.slice(0, 10);
+        orderedScores = orderedScores.slice(0, 11);
         orderedScores.forEach((obj, index) => {
             let li = document.createElement("li");
             if (index === 0) {
