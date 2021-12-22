@@ -483,11 +483,14 @@ function savePublicScore(finalChips: number) {
     storedUser = "Anon;";
   }
   let newObj = { username: storedUser, score: finalChips };
-  fetch(process.env.DATABASE_URL as string, {
-    method: "POST",
-    body: JSON.stringify(newObj),
-    headers: { "Content-Type": "application/json" },
-  })
+  fetch(
+    `https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`,
+    {
+      method: "POST",
+      body: JSON.stringify(newObj),
+      headers: { "Content-Type": "application/json" },
+    }
+  )
     .then((res) => {
       if (!res.ok) {
         throw new Error("Put request failed");
@@ -508,7 +511,7 @@ function collectPublicScores() {
   while (publicLeaderboard!.firstChild) {
     publicLeaderboard!.firstChild.remove();
   }
-  fetch(`${process.env.DATABASE_URL as string}/Blackjack.json`)
+  fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
     .then((res) => {
       if (!res.ok) {
         throw new Error("Get request failed");
