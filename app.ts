@@ -1,5 +1,11 @@
 //get DOM elements
-var root = document.querySelector(":root") as HTMLElement;
+const root = document.querySelector(":root") as HTMLElement;
+const landingForm = document.querySelector(".landing-form") as HTMLFormElement;
+const userSubmitBtn = document.querySelector(
+  "#username_submit"
+) as HTMLFormElement;
+const displaycurrUser = document.querySelector("#curr_user") as HTMLElement;
+const userInput = document.querySelector("#username_input") as HTMLFormElement;
 const playerResult = document.querySelector(".playerList") as HTMLElement;
 const houseResult = document.querySelector(".houseList") as HTMLElement;
 const face = document.getElementById("face") as HTMLElement;
@@ -11,7 +17,12 @@ let scoreboard = document.getElementById("scoreboard") as HTMLElement;
 let scoreboardDisplay = document.getElementById(
   "scoreboard_info"
 ) as HTMLElement;
-let leaderboard = document.getElementById("leaderboard") as HTMLElement;
+let localLeaderboard = document.getElementById(
+  "localLeaderboard"
+) as HTMLElement;
+let publicLeaderboard = document.getElementById(
+  "publicLeaderboard"
+) as HTMLElement;
 let backBtn = document.getElementById("back_btn") as HTMLElement;
 
 let displayChips = document.getElementById("chips") as HTMLElement;
@@ -59,8 +70,10 @@ const hideableSection = document.querySelector(
 |
 */
 
-//retrieve top scores from local
+//retrieve top scores and usernames from local
+retrieveUserName();
 retrieveScores();
+collectPublicScores();
 
 //set up global variables
 let deck: { suit: string; value: string | number }[] = [];
@@ -217,7 +230,12 @@ function standFunc() {
   standSoundFunc();
   doubleD!.disabled = true;
 
-  while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
+  while (
+    (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) ||
+    (sumHand(houseHand) > 21 &&
+      sumHandLowAce(houseHand) < 21 &&
+      sumHandLowAce(houseHand) < 17)
+  ) {
     let card = getCards(deck, 1, "house");
     revealCard(card, "house");
 
@@ -248,6 +266,7 @@ function playOver() {
     applauseSoundFunc();
     alertUser(`Game over! You leave with $${chips}`);
     writeScoreToMemory(chips);
+    savePublicScore(chips);
     disableAll();
     restart!.classList.remove("hide");
   }
@@ -324,6 +343,9 @@ function showResult(result: string) {
     case "Holy moly! Five card trick!":
       win();
       break;
+    case "House got Five card trick!":
+      lose();
+      break;
   }
 }
 
@@ -399,12 +421,20 @@ function toggleSection(btnType: string) {
   }
 }
 
+function retrieveUserName() {
+  let storedUser = localStorage.getItem("storedUser");
+  if (storedUser) {
+    landingForm.classList.add("hide");
+    toggleSection("back");
+    displaycurrUser.innerHTML = `User: ${storedUser}`;
+  }
+}
+
 function writeScoreToMemory(score: number) {
   let currentHistory: number[] = [];
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
-    console.log(currentHistory);
   }
   if (currentHistory.length > 0) {
     currentHistory.push(score);
@@ -422,12 +452,13 @@ function retrieveScores() {
   if (stored) {
     currentHistory = JSON.parse(stored);
   }
-  while (leaderboard!.firstChild) {
-    leaderboard!.firstChild.remove();
+  while (localLeaderboard!.firstChild) {
+    localLeaderboard!.firstChild.remove();
   }
 
   if (currentHistory.length > 0) {
     let sortedHistory = currentHistory.sort((a: number, b: number) => b - a);
+    sortedHistory = sortedHistory.slice(0, 10);
     sortedHistory.forEach((score: number, index: number) => {
       let li = document.createElement("li");
       if (index === 0) {
@@ -435,15 +466,84 @@ function retrieveScores() {
       } else {
         li.appendChild(document.createTextNode(String(score)));
       }
-      leaderboard!.appendChild(li);
+      localLeaderboard!.appendChild(li);
     });
   } else {
-    leaderboard!.appendChild(
+    localLeaderboard!.appendChild(
       document.createTextNode(
         "Complete 10 rounds of BlackJack with a score above 0 to record your score"
       )
     );
   }
+}
+
+function savePublicScore(finalChips: number) {
+  let storedUser = localStorage.getItem("storedUser");
+  if (storedUser === null) {
+    storedUser = "Anon;";
+  }
+  let newObj = { username: storedUser, score: finalChips };
+  fetch(
+    `https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`,
+    {
+      method: "POST",
+      body: JSON.stringify(newObj),
+      headers: { "Content-Type": "application/json" },
+    }
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Put request failed");
+      }
+      collectPublicScores();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+function collectPublicScores() {
+  //GET is default if not specified
+  interface ScoreObj {
+    score: number;
+    username: string;
+  }
+  while (publicLeaderboard!.firstChild) {
+    publicLeaderboard!.firstChild.remove();
+  }
+  fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Get request failed");
+      }
+      return res.json();
+    })
+    .then((data: { uid: ScoreObj }) => {
+      let savedScores = Object.values(data);
+
+      let orderedScores = savedScores.sort((a, b) =>
+        a.score > b.score ? -1 : 1
+      );
+      orderedScores = orderedScores.slice(0, 10);
+      orderedScores.forEach((obj, index) => {
+        let li = document.createElement("li");
+        if (index === 0) {
+          li.appendChild(
+            document.createTextNode(
+              `${obj.score}: ${obj.username} (the GOAT! 🐐👑)`
+            )
+          );
+        } else {
+          li.appendChild(
+            document.createTextNode(`${String(obj.score)}: ${obj.username}`)
+          );
+        }
+        publicLeaderboard!.appendChild(li);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 /*
@@ -453,6 +553,17 @@ function retrieveScores() {
 |
 |
 */
+
+userSubmitBtn!.addEventListener("click", (event) => {
+  event.preventDefault();
+  const currentUser = userInput.value;
+  if (currentUser.length > 0) {
+    landingForm.classList.add("hide");
+    toggleSection("back");
+    displaycurrUser.innerHTML = `User: ${currentUser}`;
+    localStorage.setItem("storedUser", currentUser);
+  }
+});
 
 //draws two cards for player and house and acts if blackjack present
 firstDraw!.addEventListener("click", () => {
@@ -590,7 +701,7 @@ doubleD!.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
-  let hotBtn: HTMLElement = bet10P;
+  let hotBtn: any;
 
   switch (event.key) {
     case "1":

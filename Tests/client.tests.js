@@ -57,15 +57,52 @@ function runTests() {
     equal(hitResult([10, 10, "A", "A"]), "BUST!");
   });
 
+  test("House should hit again if score (no aces) is less than 17", () => {
+    houseHand = [5, 10];
+    let originalLen = houseHand.length;
+    standFunc();
+    notEqual(houseHand.length, originalLen);
+    testReset();
+  });
+
+  test("House should hit again if normal score is greater than 21 and lowAce score is less than 21", () => {
+    houseHand = [5, 7, "A"];
+    let originalLen = houseHand.length;
+    standFunc();
+    notEqual(houseHand.length, originalLen);
+    testReset();
+  });
+
+  test("House should lose if bust on 5 cards", () => {
+    houseHand = ["A", "A", "A", 10, 10];
+    standFunc();
+    equal(userMessage.innerHTML, "House bust, you win!");
+    testReset();
+  });
+
+  test("House should not hit if (no ace) score is above 16", () => {
+    houseHand = [6, 17];
+    let originalLen = houseHand.length;
+    standFunc();
+    equal(houseHand.length, originalLen);
+    testReset();
+  });
+
+  test("House should not hit if lowAce score is above 16", () => {
+    houseHand = [6, 10, "A"];
+    let originalLen = houseHand.length;
+    standFunc();
+    equal(houseHand.length, originalLen);
+    testReset();
+  });
+
   test("Bet 10%", () => {
     let starting = displayChips.innerHTML;
     bet10P.click();
     let expected = String(Number(starting / 10));
     let result = displayPot.innerHTML;
     equal(result, expected);
-    //reset pot to 0 for other tests
-    displayPot.innerHTML = "0";
-    pot = 0;
+    testReset();
   });
 
   test("Bet 20%", () => {
@@ -74,9 +111,7 @@ function runTests() {
     let expected = String(Number(starting / 5));
     let result = displayPot.innerHTML;
     equal(result, expected);
-    //reset pot to 0 for other tests
-    displayPot.innerHTML = "0";
-    pot = 0;
+    testReset();
   });
 
   test("Bet 33%", () => {
@@ -85,9 +120,7 @@ function runTests() {
     let expected = String(Number(starting / 3));
     let result = displayPot.innerHTML;
     equal(result, expected);
-    //reset pot to 0 for other tests
-    displayPot.innerHTML = "0";
-    pot = 0;
+    testReset();
   });
 
   test("Bet it all", () => {
@@ -96,9 +129,8 @@ function runTests() {
     let expected = starting;
     let result = displayPot.innerHTML;
     equal(result, expected);
-    //reset pot to 0 for other tests
     displayPot.innerHTML = "0";
-    pot = 0;
+    testReset();
   });
 
   test("Two cards drawn", () => {
@@ -108,6 +140,37 @@ function runTests() {
     equal(resultLen, 2);
     //reset pot to 0 for other tests
     displayPot.innerHTML = "0";
-    pot = 0;
+    testReset();
   });
+
+  chips = 500;
+  displayChips.innerHTML = "500";
+}
+
+function testReset() {
+  pot = 0;
+  displayScore.textContent = "0";
+  displayHouseScore.textContent = "0";
+  displayPot.innerHTML = "0";
+  playerResult.innerHTML = "";
+  houseResult.style.visibility = "hidden";
+  face.textContent = "";
+  houseResult.innerHTML = "";
+
+  playerHand = [];
+  houseHand = [];
+
+  root.style.setProperty("--main-bg-color", "#bfdff6");
+
+  firstDraw.disabled = true;
+  hit.disabled = true;
+  stand.disabled = true;
+  bet10P.disabled = false;
+  bet20P.disabled = false;
+  bet33P.disabled = false;
+  betAllP.disabled = false;
+  nxtGame.disabled = true;
+  doubleD.disabled = true;
+
+  alertUser("Place your bet to start");
 }

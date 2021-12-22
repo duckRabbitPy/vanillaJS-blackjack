@@ -29,6 +29,14 @@ h2 {
   font-weight: lighter;
 }
 
+.landing-heading {
+  font-size: xx-large;
+}
+
+.landing-form {
+  margin: 1rem;
+}
+
 .larger-text {
   font-size: larger;
 }
