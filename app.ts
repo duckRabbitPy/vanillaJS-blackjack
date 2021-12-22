@@ -1,5 +1,11 @@
 //get DOM elements
-var root = document.querySelector(":root") as HTMLElement;
+const root = document.querySelector(":root") as HTMLElement;
+const landingForm = document.querySelector(".landing-form") as HTMLFormElement;
+const userSubmitBtn = document.querySelector(
+  "#username_submit"
+) as HTMLFormElement;
+const displaycurrUser = document.querySelector("#curr_user") as HTMLElement;
+const userInput = document.querySelector("#username_input") as HTMLFormElement;
 const playerResult = document.querySelector(".playerList") as HTMLElement;
 const houseResult = document.querySelector(".houseList") as HTMLElement;
 const face = document.getElementById("face") as HTMLElement;
@@ -64,7 +70,8 @@ const hideableSection = document.querySelector(
 |
 */
 
-//retrieve top scores from local
+//retrieve top scores and usernames from local
+retrieveUserName();
 retrieveScores();
 collectPublicScores();
 
@@ -406,6 +413,15 @@ function toggleSection(btnType: string) {
   }
 }
 
+function retrieveUserName() {
+  let storedUser = localStorage.getItem("storedUser");
+  if (storedUser) {
+    landingForm.classList.add("hide");
+    toggleSection("back");
+    displaycurrUser.innerHTML = `User: ${storedUser}`;
+  }
+}
+
 function writeScoreToMemory(score: number) {
   let currentHistory: number[] = [];
   let stored = localStorage.getItem("storedHistory");
@@ -454,7 +470,11 @@ function retrieveScores() {
 }
 
 function savePublicScore(finalChips: number) {
-  let newObj = { username: "Anon", score: finalChips };
+  let storedUser = localStorage.getItem("storedUser");
+  if (storedUser === null) {
+    storedUser = "Anon;";
+  }
+  let newObj = { username: storedUser, score: finalChips };
   fetch(
     `https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`,
     {
@@ -492,7 +512,6 @@ function collectPublicScores() {
     })
     .then((data: { uid: ScoreObj }) => {
       let savedScores = Object.values(data);
-      console.log(savedScores);
 
       let orderedScores = savedScores.sort((a, b) =>
         a.score > b.score ? -1 : 1
@@ -526,6 +545,17 @@ function collectPublicScores() {
 |
 |
 */
+
+userSubmitBtn!.addEventListener("click", (event) => {
+  event.preventDefault();
+  const currentUser = userInput.value;
+  if (currentUser.length > 0) {
+    landingForm.classList.add("hide");
+    toggleSection("back");
+    displaycurrUser.innerHTML = `User: ${currentUser}`;
+    localStorage.setItem("storedUser", currentUser);
+  }
+});
 
 //draws two cards for player and house and acts if blackjack present
 firstDraw!.addEventListener("click", () => {
