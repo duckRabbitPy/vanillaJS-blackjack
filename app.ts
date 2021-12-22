@@ -701,7 +701,7 @@ doubleD!.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (event) => {
-  let hotBtn: HTMLElement = bet10P;
+  let hotBtn: any;
 
   switch (event.key) {
     case "1":

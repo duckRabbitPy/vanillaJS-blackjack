@@ -583,7 +583,7 @@ doubleD.addEventListener("click", () => {
     doubleDown();
 });
 document.addEventListener("keydown", (event) => {
-    let hotBtn = bet10P;
+    let hotBtn;
     switch (event.key) {
         case "1":
             hotBtn = bet10P;
