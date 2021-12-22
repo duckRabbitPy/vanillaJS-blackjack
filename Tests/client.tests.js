@@ -66,10 +66,17 @@ function runTests() {
   });
 
   test("House should hit again if normal score is greater than 21 and lowAce score is less than 21", () => {
-    houseHand = [5, 6, "A"];
+    houseHand = [5, 7, "A"];
     let originalLen = houseHand.length;
     standFunc();
     notEqual(houseHand.length, originalLen);
+    testReset();
+  });
+
+  test("House should lose if bust on 5 cards", () => {
+    houseHand = ["A", "A", "A", 10, 10];
+    standFunc();
+    equal(userMessage.innerHTML, "House bust, you win!");
     testReset();
   });
 
