@@ -13,7 +13,6 @@
       crossorigin="anonymous"
     />
     <title>BlackJack ♠</title>
-    <p id="curr_user"></p>
   </head>
   <body onload="init()">
     <section class="info hstack">
@@ -22,8 +21,8 @@
       <button class="glass" id="back_btn">Home</button>
     </section>
 
-    <section class="column">
-      <!-- <h1 class="landing-heading">OJ's BlackJack Casino! ♠</h1> -->
+    <section class="column intro">
+      <h1 class="landing-heading">OJ's BlackJack Casino! ♠</h1>
       <form class="landing-form" action="" method="POST">
       <label for="username_input">Enter username: </label>
       <input name="username_input" id="username_input" type="text">
@@ -34,7 +33,8 @@
     <section class="toggle-section hide">
     <div class="row">
       <div class="column">
-        <h1>BlackJack ♠</h>
+        <h1>BlackJack ♠ </h1>
+        <h2 id="curr_user"></h2>
         <section class="message-box">
           <p id="user-message">Place your bet to start</p>
         </section>
