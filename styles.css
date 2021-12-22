@@ -29,6 +29,11 @@ h2 {
   font-weight: lighter;
 }
 
+.intro {
+  display: flex;
+  flex-direction: row;
+}
+
 .landing-heading {
   font-size: xx-large;
 }
@@ -59,6 +64,10 @@ h2 {
 
 .pulse {
   animation: pulse 2s infinite;
+}
+
+#back_btn {
+  display: none;
 }
 
 .hide {
@@ -133,7 +142,7 @@ button:hover {
 
 #help_info,
 #scoreboard_info {
-  margin: 1rem;
+  margin: 4rem;
 }
 
 .drawing {
@@ -225,12 +234,18 @@ span {
   );
 }
 
+table {
+  background-color: white;
+  border: darkblue 2px solid;
+}
+
 table .top-row {
   padding-bottom: 10px;
 }
 
 table td {
-  padding-left: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 @keyframes pulse {
@@ -263,6 +278,7 @@ table td {
   }
 
   h1 {
+    margin-top: 0.5rem;
     font-size: smaller;
   }
 

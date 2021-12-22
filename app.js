@@ -356,7 +356,7 @@ function retrieveUserName() {
     if (storedUser) {
         landingForm.classList.add("hide");
         toggleSection("back");
-        displaycurrUser.innerHTML = `User: ${storedUser}`;
+        displaycurrUser.innerHTML = `🤠 ${storedUser}`;
     }
 }
 function writeScoreToMemory(score) {
@@ -465,6 +465,7 @@ userSubmitBtn.addEventListener("click", (event) => {
     const currentUser = userInput.value;
     if (currentUser.length > 0) {
         landingForm.classList.add("hide");
+        backBtn.style.display = "inline";
         toggleSection("back");
         displaycurrUser.innerHTML = `User: ${currentUser}`;
         localStorage.setItem("storedUser", currentUser);
