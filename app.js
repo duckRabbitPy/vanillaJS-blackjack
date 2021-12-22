@@ -355,6 +355,7 @@ function retrieveUserName() {
     let storedUser = localStorage.getItem("storedUser");
     if (storedUser) {
         landingForm.classList.add("hide");
+        backBtn.style.display = "inline";
         toggleSection("back");
         displaycurrUser.innerHTML = `🤠 ${storedUser}`;
     }

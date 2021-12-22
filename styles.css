@@ -277,9 +277,9 @@ table td {
     padding: 0;
   }
 
-  h1 {
-    margin-top: 0.5rem;
-    font-size: smaller;
+  .landing-heading {
+    margin-top: 0.3rem;
+    font-size: small;
   }
 
   h6 {
