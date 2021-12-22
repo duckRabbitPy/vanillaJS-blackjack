@@ -182,11 +182,20 @@ function hitFunc() {
 function standFunc() {
     standSoundFunc();
     doubleD.disabled = true;
-    while (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) {
+    while (sumHand(houseHand) < 17 ||
+        (sumHand(houseHand) > 21 &&
+            sumHandLowAce(houseHand) < 17 &&
+            (sumHand(houseHand) < 21 || sumHandLowAce(houseHand) < 21))) {
         let card = getCards(deck, 1, "house");
         revealCard(card, "house");
-        let houseScore = sumHand(houseHand);
-        displayHouseScore.textContent = String(houseScore);
+    }
+    let houseScore = sumHand(houseHand);
+    if (houseScore > 21 && !houseHand.includes("A")) {
+        displayScore.textContent = String(houseScore);
+    }
+    else {
+        let Ascore = sumHandLowAce(houseHand);
+        displayScore.textContent = String(Ascore);
     }
     let result = standResult(playerHand, houseHand);
     showResult(result);

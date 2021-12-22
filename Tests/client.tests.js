@@ -57,6 +57,21 @@ function runTests() {
     equal(hitResult([10, 10, "A", "A"]), "BUST!");
   });
 
+  test("House should hit again if normal score is greater than 21 and lowAce score is less than 21", () => {
+    houseHand = [5, 6, "A"];
+    let originalLen = houseHand.length;
+    standFunc();
+    notEqual(houseHand.length, originalLen);
+    console.log(houseHand, houseScore);
+  });
+
+  test("House should not hit if lowAce score is above 16", () => {
+    houseHand = [6, 10, "A"];
+    let originalLen = houseHand.length;
+    standFunc();
+    equal(houseHand.length, originalLen);
+  });
+
   test("Bet 10%", () => {
     let starting = displayChips.innerHTML;
     bet10P.click();
