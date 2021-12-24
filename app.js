@@ -188,8 +188,14 @@ function standFunc() {
             sumHandLowAce(houseHand) < 17)) {
         let card = getCards(deck, 1, "house");
         revealCard(card, "house");
-        let houseScore = sumHand(houseHand);
+    }
+    let houseScore = sumHand(houseHand);
+    if (houseScore > 21 && !houseHand.includes("A")) {
         displayHouseScore.textContent = String(houseScore);
+    }
+    else {
+        let Ascore = sumHandLowAce(houseHand);
+        displayHouseScore.textContent = String(Ascore);
     }
     let result = standResult(playerHand, houseHand);
     showResult(result);
@@ -277,6 +283,9 @@ function showResult(result) {
             break;
         case "BUST!":
             lose();
+            break;
+        case "House bust, you win!":
+            win();
             break;
         case "House got blackJack!":
             lose();

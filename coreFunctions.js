@@ -28,7 +28,7 @@ function standResult(playerHand, houseHand) {
             }
             else {
                 //no aces and over 21 so house bust
-                return "You win";
+                return "House bust, you win!";
             }
         }
         //if house has higher hand than player (and house is under 21)
