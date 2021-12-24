@@ -263,6 +263,20 @@ table td {
 }
 
 @media only screen and (max-width: 700px) {
+  h2 {
+    margin: 0;
+  }
+
+  .playerList,
+  .houseList,
+  #face {
+    font-size: 4vh;
+  }
+
+  button {
+    padding: 0.1rem;
+  }
+
   .row {
     display: flex;
     flex-direction: column;
