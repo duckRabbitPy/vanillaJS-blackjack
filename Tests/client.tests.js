@@ -105,6 +105,7 @@ function runTests() {
 
   test("Bust house hand should be summed low if aces in hand", () => {
     houseHand = [10, 10, 2, "A"];
+    standFunc();
     equal(Number(displayHouseScore.innerHTML) === 23, true);
     testReset();
   });
