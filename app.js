@@ -278,6 +278,9 @@ function showResult(result) {
         case "BUST!":
             lose();
             break;
+        case "House bust, you win!":
+            win();
+            break;
         case "House got blackJack!":
             lose();
             break;

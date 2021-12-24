@@ -18,7 +18,7 @@ function runTests() {
     equal(standResult([10, 7, 4], ["A", 10]), "House got blackJack!");
   });
   test("House goes bust (no aces involved)", () => {
-    equal(standResult([10, 7], [10, 10, 5]), "You win");
+    equal(standResult([10, 7], [10, 10, 5]), "House bust, you win!");
   });
   test("Player wins with high ace score", () => {
     equal(standResult([9, "A"], ["K", 4, 3]), "You win");
@@ -80,6 +80,13 @@ function runTests() {
     testReset();
   });
 
+  test("House should lose and go bust on greater than 21", () => {
+    houseHand = [2, 10, 10];
+    standFunc();
+    equal(userMessage.innerHTML, "House bust, you win!");
+    testReset();
+  });
+
   test("House should not hit if (no ace) score is above 16", () => {
     houseHand = [6, 17];
     let originalLen = houseHand.length;
@@ -93,6 +100,12 @@ function runTests() {
     let originalLen = houseHand.length;
     standFunc();
     equal(houseHand.length, originalLen);
+    testReset();
+  });
+
+  test("Bust house hand should be summed low if aces in hand", () => {
+    houseHand = [10, 10, 2, "A"];
+    equal(Number(displayHouseScore.innerHTML) === 23, true);
     testReset();
   });
 
