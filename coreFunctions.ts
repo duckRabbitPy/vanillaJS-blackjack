@@ -2,71 +2,71 @@ function standResult(
   playerHand: (number | string)[],
   houseHand: (number | string)[]
 ) {
-  if (sumHandLowAce(playerHand) > 21) {
+  const houseHighAceScore = sumHand(houseHand);
+  const houseLowAceScore = sumHandLowAce(houseHand);
+  const playerHighAceScore = sumHand(playerHand);
+  const playerLowAceScore = sumHandLowAce(playerHand);
+
+  //house gets blackJack
+  if (
+    houseHighAceScore === 21 &&
+    houseHand.length === 2 &&
+    playerHand.length !== 2
+  ) {
+    return "House got blackJack!";
+  }
+
+  if (playerLowAceScore > 21) {
     return "BUST!";
   }
-  if (playerHand.includes("A") && sumHand(playerHand) === 22) {
-    //player has foolishly chosen to stand on pocket Aces
-    return "House wins";
-  } else {
-    //set low ace score
-    let lowScore = sumHandLowAce(houseHand);
 
-    //if house hand is over 21
-    if (sumHand(houseHand) > 21) {
-      //if househand has an ace
-      if (houseHand.includes("A")) {
-        if (lowScore > 21) {
-          return "House bust, you win!";
-        }
-        //if ace low house hand higher than player hand, house wins
-        else if (lowScore > sumHand(playerHand)) {
-          return "House wins";
-          //if ace low house hand lower than player hand, player wins
-        } else if (lowScore < sumHand(playerHand)) {
-          return "You win";
-        }
-      } else {
-        //no aces and over 21 so house bust
-        return "House bust, you win!";
-      }
-    }
-    //if house has higher hand than player (and house is under 21)
-    else if (sumHand(houseHand) > sumHand(playerHand)) {
-      return "House wins";
-    }
-    //else if house has lower hand than player:
-    else if (sumHand(houseHand) < sumHand(playerHand)) {
-      let score = sumHand(playerHand);
-      let Ascore = sumHandLowAce(playerHand);
-
-      //player is bust if over 21 without aces
-      if (score > 21 && !playerHand.includes("A")) {
-        return "Bust, house wins";
-      }
-      //player hand wins if not bust and greater than house hand
-      if (score <= 21 && score > sumHand(houseHand)) {
-        return "You win";
-      }
-      //player hand wins if has low aces and greater than househand
-      else if (Ascore < 22 && Ascore > sumHand(houseHand)) {
-        return "You win";
-      }
-      //player loses if has low aces and lower than househand
-      else if (Ascore < 22 && Ascore < sumHand(houseHand)) {
-        return "House wins";
-      }
-      // if there is a draw but house has blackJack
-    } else if (
-      sumHand(houseHand) === 21 &&
-      houseHand.length === 2 &&
-      playerHand.length !== 2
-    ) {
-      return "House got blackJack!";
-    }
+  if (playerHighAceScore > 21 && !playerHand.includes("A")) {
+    return "BUST!";
   }
-  //else must be a draw
-  return "Draw";
+
+  if (houseLowAceScore > 21) {
+    return "House bust, you win!";
+  }
+
+  if (houseHighAceScore > 21 && !houseHand.includes("A")) {
+    return "House bust, you win!";
+  }
+
+  //houseLowAce and playerLowAce score are below 21
+
+  if (
+    houseHighAceScore === playerHighAceScore ||
+    houseLowAceScore === playerLowAceScore ||
+    houseHighAceScore === playerLowAceScore ||
+    houseLowAceScore === playerHighAceScore
+  ) {
+    return "Draw";
+  }
+
+  if (houseLowAceScore > playerHighAceScore) {
+    return "House wins";
+  }
+  if (houseHighAceScore < playerHighAceScore && playerHighAceScore < 21) {
+    return "You win";
+  }
+
+  if (houseHighAceScore < playerLowAceScore) {
+    return "You win";
+  }
+
+  if (houseHighAceScore > playerHighAceScore) {
+    return "House wins";
+  }
+
+  if (houseLowAceScore > playerLowAceScore) {
+    return "House wins";
+  }
+
+  if (houseHighAceScore < playerHighAceScore) {
+    return "You win";
+  } else {
+    throw new Error("Unexpected result");
+  }
 }
 
 function hitResult(playerHand: (number | string)[]) {
