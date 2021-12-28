@@ -79,7 +79,7 @@ betPulseOn();
 */
 //init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
-    fetch("/deck.json")
+    fetch("/src/deck.json")
         .then((response) => response.json())
         .then((cards) => {
         deck = cards;
