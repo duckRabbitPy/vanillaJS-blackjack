@@ -32,8 +32,6 @@ function standResult(
     return "House bust, you win!";
   }
 
-  //houseLowAce and playerLowAce score are below 21
-
   if (
     houseHighAceScore === playerHighAceScore ||
     houseLowAceScore === playerLowAceScore ||
@@ -46,26 +44,36 @@ function standResult(
   if (houseLowAceScore > playerHighAceScore) {
     return "House wins";
   }
-  if (houseHighAceScore < playerHighAceScore && playerHighAceScore < 21) {
-    return "You win";
-  }
 
   if (houseHighAceScore < playerLowAceScore) {
     return "You win";
   }
 
-  if (houseHighAceScore > playerHighAceScore) {
+  if (houseHighAceScore < playerHighAceScore && playerHighAceScore < 22) {
+    return "You win";
+  }
+
+  if (houseHighAceScore > playerHighAceScore && houseHighAceScore < 22) {
     return "House wins";
   }
 
-  if (houseLowAceScore > playerLowAceScore) {
+  if (playerHighAceScore > houseLowAceScore && playerHighAceScore < 22) {
+    return "You win";
+  }
+
+  if (houseLowAceScore > playerLowAceScore && houseHighAceScore < 22) {
     return "House wins";
   }
 
   if (houseHighAceScore < playerHighAceScore) {
     return "You win";
+  }
+
+  if (playerHighAceScore < houseHighAceScore) {
+    return "House wins";
   } else {
-    throw new Error("Unexpected result");
+    //default if the function fails to return
+    return "Draw";
   }
 }
 
