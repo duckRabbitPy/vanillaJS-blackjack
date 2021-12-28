@@ -2,7 +2,7 @@
 
 I started this project with the primary goal of building something of considerable complexity without the aid of a tutorial, guide or framework. As a result my implementation is far from perfect but it works well and i'm proud of what i've achieved so far.
 
-![gameplay](/Media/gameplay.png)
+![gameplay](src/Media/gameplay.png)
 
 <h2>BlackJack rules</h2>
 <p>The aim of the game is to complete 10 hands of blackjack and leave with the highest possible number of chips.</p>
