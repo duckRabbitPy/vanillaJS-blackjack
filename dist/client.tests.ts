@@ -1,4 +1,49 @@
 //call runTests() in console
+/*----------------------------------------------------*\
+ TEST HELPERS
+\*----------------------------------------------------*/
+
+function equal(actual: any, expected: any) {
+  if (actual === expected) {
+    const defaultMessage = `Expected: ${expected} and received: ${actual}`;
+    console.info(
+      "%cPass: " + defaultMessage + " ✅",
+      "background: white; color: green; padding: 3px"
+    );
+  } else {
+    const defaultMessage = `Expected: ${expected} but received: ${actual} instead`;
+    console.error(
+      "%cFail: " + defaultMessage + " ❌",
+      "background: white; color: red; padding: 3px"
+    );
+  }
+}
+
+function notEqual(actual: any, expected: any) {
+  if (actual !== expected) {
+    const defaultMessage = `${expected} is different to ${actual}`;
+    console.info(
+      "%cPass: " + defaultMessage + " ✅",
+      "background: white; color: green; padding: 3px"
+    );
+  } else {
+    const defaultMessage = `${expected} is the same as ${actual}`;
+    console.error(
+      "%cFail: " + defaultMessage + " ❌",
+      "background: white; color: red; padding: 3px"
+    );
+  }
+}
+
+function test(name: string, testFunction: any) {
+  console.group(name);
+  testFunction();
+  console.groupEnd();
+}
+
+/*----------------------------------------------------*\
+ Unit tests
+\*----------------------------------------------------*/
 
 function runTests() {
   test("Player score lower than House (no aces involved)", () => {
@@ -57,6 +102,14 @@ function runTests() {
     equal(hitResult([10, 10, "A", "A"]), "BUST!");
   });
 
+  test("Invalid string input should result in draw", () => {
+    equal(standResult(["invalid", "data"], ["incorrect", "strings"]), "Draw");
+  });
+
+  /*----------------------------------------------------*\
+ Integration tests
+\*----------------------------------------------------*/
+
   test("House should hit again if score (no aces) is less than 17", () => {
     houseHand = [5, 10];
     let originalLen = houseHand.length;
@@ -113,7 +166,7 @@ function runTests() {
   test("Bet 10%", () => {
     let starting = displayChips.innerHTML;
     bet10P.click();
-    let expected = String(Number(starting / 10));
+    let expected = String(Number(starting) / 10);
     let result = displayPot.innerHTML;
     equal(result, expected);
     testReset();
@@ -122,7 +175,7 @@ function runTests() {
   test("Bet 20%", () => {
     let starting = displayChips.innerHTML;
     bet20P.click();
-    let expected = String(Number(starting / 5));
+    let expected = String(Number(starting) / 5);
     let result = displayPot.innerHTML;
     equal(result, expected);
     testReset();
@@ -131,7 +184,7 @@ function runTests() {
   test("Bet 33%", () => {
     let starting = displayChips.innerHTML;
     bet33P.click();
-    let expected = String(Number(starting / 3));
+    let expected = String(Number(starting) / 3);
     let result = displayPot.innerHTML;
     equal(result, expected);
     testReset();
