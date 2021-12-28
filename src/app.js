@@ -79,12 +79,13 @@ betPulseOn();
 */
 //init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
-    fetch("/deck.json")
+    fetch("/src/deck.json")
         .then((response) => response.json())
         .then((cards) => {
         deck = cards;
     });
 }
+//player adds their chips to the pot
 function placeBet(amount) {
     //default is bet 10
     let divisor = 10;
@@ -109,6 +110,7 @@ function placeBet(amount) {
     displayChips.textContent = String(chips);
     displayPot.textContent = String(pot);
 }
+//player doubles their bet, draws a single card and stands
 function doubleDown() {
     newCardSoundFunc();
     if (pot > chips) {
@@ -144,7 +146,7 @@ function getCards(deck, numOfCards, reciever) {
     }
     return result;
 }
-//define function that when called adds new card to player/house innerHMTL
+//function that when called adds new card to player/house innerHMTL
 function revealCard(newCard, reciever) {
     const html = `
 
@@ -200,6 +202,7 @@ function standFunc() {
     let result = standResult(playerHand, houseHand);
     showResult(result);
 }
+//resets buttons and html display in preparation for next hand
 function playOver() {
     if (chips > 0) {
         firstDraw.disabled = true;
@@ -269,6 +272,7 @@ function betPulseOff() {
     bet33P.classList.remove("pulse");
     betAllP.classList.remove("pulse");
 }
+//displays result of standfunction call
 function showResult(result) {
     alertUser(result);
     switch (result) {
@@ -341,6 +345,7 @@ function disableAll() {
     betAllP.disabled = true;
     nxtGame.disabled = true;
 }
+//controls toggling with menu buttons
 function toggleSection(btnType) {
     backBtn.classList.remove("hide");
     if (btnType === "scoreboard") {
@@ -360,6 +365,7 @@ function toggleSection(btnType) {
         hideableSection.classList.remove("hide");
     }
 }
+//displays username if found in local storage
 function retrieveUserName() {
     let storedUser = localStorage.getItem("storedUser");
     if (storedUser) {
@@ -369,6 +375,7 @@ function retrieveUserName() {
         displaycurrUser.innerHTML = `🤠 ${storedUser}`;
     }
 }
+//stores new username in local storage
 function writeScoreToMemory(score) {
     let currentHistory = [];
     let stored = localStorage.getItem("storedHistory");
@@ -385,6 +392,7 @@ function writeScoreToMemory(score) {
         retrieveScores();
     }
 }
+//retrieves personal best scores from local storage
 function retrieveScores() {
     let currentHistory = [];
     let stored = localStorage.getItem("storedHistory");
@@ -412,6 +420,7 @@ function retrieveScores() {
         localLeaderboard.appendChild(document.createTextNode("Complete 10 rounds of BlackJack with a score above 0 to record your score"));
     }
 }
+//saves score to firebase database
 function savePublicScore(finalChips) {
     let storedUser = localStorage.getItem("storedUser");
     if (storedUser === null) {
@@ -433,6 +442,7 @@ function savePublicScore(finalChips) {
         console.log(err);
     });
 }
+//retrieves score from firebase database
 function collectPublicScores() {
     while (publicLeaderboard.firstChild) {
         publicLeaderboard.firstChild.remove();
@@ -470,9 +480,10 @@ function collectPublicScores() {
 |
 |
 */
+//accepts string input for username
 userSubmitBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    const currentUser = userInput.value;
+    const currentUser = userInput.value.trim();
     if (currentUser.length > 0) {
         landingForm.classList.add("hide");
         backBtn.style.display = "inline";
