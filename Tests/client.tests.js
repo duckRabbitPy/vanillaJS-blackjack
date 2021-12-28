@@ -1,46 +1,68 @@
 //call runTests() in console
 
 function runTests() {
-  test("Player score lower than House (no aces involved)", () => {
+  test("Player wins with higher than House (no aces involved)", () => {
+    equal(standResult([9, 10], [10, 7]), "You win");
+  });
+  test("Player wins with high ace higher than House score (house no aces)", () => {
+    equal(standResult([9, 10, "A"], [10, 9]), "You win");
+  });
+  test("Player wins with high ace score, both have aces", () => {
+    equal(standResult([9, "A"], [10, 4, 3, "A"]), "You win");
+  });
+  test("Player wins with low ace higher than House score (house no aces)", () => {
+    equal(standResult([10, 7, 3, "A"], [10, 2, 6]), "You win");
+  });
+  test("Player wins with low ace higher than House score (house has aces)", () => {
+    equal(standResult([10, 7, 3, "A"], [10, 2, 6, "A"]), "You win");
+  });
+
+  test("Player loses with lower than House (no aces involved)", () => {
     equal(standResult([10, 7], [10, 9]), "House wins");
   });
+
+  test("Players loses without aces, house has high ace", () => {
+    equal(standResult([10, 9], [9, 10, "A"]), "House wins");
+  });
+  test("Player loses with high ace score, both have aces", () => {
+    equal(standResult([7, 2, "A"], ["A", 7, 3]), "House wins");
+  });
+  test("Player loses without aces, house has low ace", () => {
+    equal(standResult([10, 7, 3], [10, 7, 3, "A"]), "House wins");
+  });
+  test("Player stands and loses on pocket aces", () => {
+    equal(standResult(["A", "A"], ["K", 8]), "House wins");
+  });
+  test("House gets blackJack", () => {
+    equal(standResult([10, 7, 4], ["A", 10]), "House got blackJack!");
+  });
+
   test("Player and house score equal (no aces involved)", () => {
     equal(standResult([10, 7, 2], [10, 9]), "Draw");
   });
   test("Player and house score equal (house has low ace)", () => {
     equal(standResult([10, 6, 2], [10, "A", 7]), "Draw");
   });
-
-  test("Player and house score equal (no aces involved)", () => {
-    equal(standResult(["K", 8], [9, 9]), "Draw");
-  });
-  test("House get blackJack", () => {
-    equal(standResult([10, 7, 4], ["A", 10]), "House got blackJack!");
-  });
-  test("House goes bust (no aces involved)", () => {
-    equal(standResult([10, 7], [10, 10, 5]), "House bust, you win!");
-  });
-  test("Player wins with high ace score", () => {
-    equal(standResult([9, "A"], ["K", 4, 3]), "You win");
-  });
-
-  test("Player stands on pocket aces", () => {
-    equal(standResult(["A", "A"], ["K", 8]), "House wins");
-  });
-
-  test("Player has superior high ace hand", () => {
-    equal(standResult([7, 3, "A"], ["A", 2, 6]), "You win");
-  });
-
-  test("House has superior high aces", () => {
-    equal(standResult([7, 2, "A"], ["A", 7, 3]), "House wins");
+  test("Player and house score equal (player has low ace)", () => {
+    equal(standResult([10, "A", 7], [4, "K", 4]), "Draw");
   });
   test("Player and house both draw with low aces", () => {
     equal(standResult([7, 3, "A"], ["A", 7, 3]), "Draw");
   });
-  test("Player goes bust on double down", () => {
+
+  test("Player goes bust without aces", () => {
     equal(standResult([7, 9, 9], [10, 5, 10]), "BUST!");
   });
+  test("Player goes bust with low aces", () => {
+    equal(standResult([10, "A", "A", 10], ["A", 2, 6]), "BUST!");
+  });
+  test("House goes bust without aces", () => {
+    equal(standResult([10, 7], [10, 10, 5]), "House bust, you win!");
+  });
+  test("House goes bust with low aces", () => {
+    equal(standResult([10, 7], [10, "A", "A", 10]), "House bust, you win!");
+  });
+
   test("Hit and not bust", () => {
     equal(hitResult([10, 7, 2]), "Hit, stand or double down?");
   });
@@ -55,6 +77,10 @@ function runTests() {
   });
   test("Hit and bust on low aces", () => {
     equal(hitResult([10, 10, "A", "A"]), "BUST!");
+  });
+
+  test("Invalid string input should result in draw", () => {
+    equal(standResult(["invalid", "data"], ["incorrect", "strings"]), "Draw");
   });
 
   test("House should hit again if score (no aces) is less than 17", () => {
