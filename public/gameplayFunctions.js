@@ -1,14 +1,14 @@
+"use strict";
 //init gets JSON Deck of cards out of local to creates/resets the deck
 function init() {
-  fetch("/src/deck.json")
+  fetch("deck.json")
     .then((response) => response.json())
     .then((cards) => {
       deck = cards;
     });
 }
-
 //player adds their chips to the pot
-function placeBet(amount: string) {
+function placeBet(amount) {
   //default is bet 10
   let divisor = 10;
   switch (amount) {
@@ -25,44 +25,34 @@ function placeBet(amount: string) {
       divisor = 1;
       break;
   }
-
   let bet = Math.floor(chips / divisor);
   chipSoundFunc();
   chips -= bet;
   pot += bet;
-  displayChips!.textContent = String(chips);
-  displayPot!.textContent = String(pot);
+  displayChips.textContent = String(chips);
+  displayPot.textContent = String(pot);
 }
-
 //player doubles their bet, draws a single card and stands
 function doubleDown() {
   newCardSoundFunc();
-
   if (pot > chips) {
     alertUser("You do not have enough chips to double down");
   } else {
     let bet = pot;
     chips -= bet;
     pot += bet;
-    displayChips!.textContent = String(chips);
-    displayPot!.textContent = String(pot);
+    displayChips.textContent = String(chips);
+    displayPot.textContent = String(pot);
     hitFunc();
     standFunc();
   }
 }
-
 //pulls n num of cards out of deck and adds to hand
-function getCards(
-  deck: { suit: string; value: string | number }[],
-  numOfCards: number,
-  reciever: "player" | "house"
-) {
+function getCards(deck, numOfCards, reciever) {
   let result = [];
-
   for (let x = 0; x < numOfCards; x++) {
     let index = Math.floor(Math.random() * Math.floor(deck.length));
     //push card at chosen index to newHand and remove from deck
-
     if (reciever === "player") {
       let newHand = playerHand.concat(deck[index].value);
       playerHand = newHand;
@@ -70,62 +60,48 @@ function getCards(
       let newHouseHand = houseHand.concat(deck[index].value);
       houseHand = newHouseHand;
     }
-
     result.push(String(deck[index].value) + deck[index].suit);
-
     //remove card from deck
     deck.splice(index, 1);
   }
   return result;
 }
-
 //function that when called adds new card to player/house innerHMTL
-function revealCard(
-  newCard: string | number | (string | number)[],
-  reciever: "player" | "house"
-) {
+function revealCard(newCard, reciever) {
   const html = `
   
        ${newCard}
       
       `;
-
   if (reciever === "player") {
-    playerResult!.innerHTML += html;
+    playerResult.innerHTML += html;
   } else if (reciever === "house") {
-    houseResult!.innerHTML += html;
+    houseResult.innerHTML += html;
   }
 }
-
 //adds new card to player hand
 function hitFunc() {
   newCardSoundFunc();
-
   let card = getCards(deck, 1, "player");
   revealCard(card, "player");
-
   let score = sumHand(playerHand);
-  doubleD!.disabled = true;
-
+  doubleD.disabled = true;
   let result = hitResult(playerHand);
   showResult(result);
-
   if (score > 21 && !playerHand.includes("A")) {
-    displayScore!.textContent = String(score);
+    displayScore.textContent = String(score);
   } else {
     let Ascore = sumHandLowAce(playerHand);
-    displayScore!.textContent = String(Ascore);
+    displayScore.textContent = String(Ascore);
   }
   if (playerHand.length > 4) {
-    displayHouseScore!.style.visibility = "visible";
+    displayHouseScore.style.visibility = "visible";
   }
 }
-
 //this is where the winner is decided, the house will keep drawing until they have a score of 17 or more
 function standFunc() {
   standSoundFunc();
-  doubleD!.disabled = true;
-
+  doubleD.disabled = true;
   while (
     (sumHand(houseHand) < 17 && sumHand(houseHand) < 21) ||
     (sumHand(houseHand) > 21 &&
@@ -135,98 +111,87 @@ function standFunc() {
     let card = getCards(deck, 1, "house");
     revealCard(card, "house");
   }
-
   let houseScore = sumHand(houseHand);
-
   if (houseScore > 21 && !houseHand.includes("A")) {
-    displayHouseScore!.textContent = String(houseScore);
+    displayHouseScore.textContent = String(houseScore);
   } else {
     let Ascore = sumHandLowAce(houseHand);
-    displayHouseScore!.textContent = String(Ascore);
+    displayHouseScore.textContent = String(Ascore);
   }
-
   let result = standResult(playerHand, houseHand);
   showResult(result);
 }
-
 //resets buttons and html display in preparation for next hand
 function playOver() {
   if (chips > 0) {
-    firstDraw!.disabled = true;
-    hit!.disabled = true;
-    stand!.disabled = true;
-    doubleD!.disabled = true;
-    nxtGame!.disabled = false;
-    houseResult!.style.visibility = "visible";
-    displayHouseScore!.style.visibility = "visible";
+    firstDraw.disabled = true;
+    hit.disabled = true;
+    stand.disabled = true;
+    doubleD.disabled = true;
+    nxtGame.disabled = false;
+    houseResult.style.visibility = "visible";
+    displayHouseScore.style.visibility = "visible";
   } else {
-    houseResult!.style.visibility = "visible";
-    displayHouseScore!.style.visibility = "visible";
-    restart!.classList.remove("hide");
+    houseResult.style.visibility = "visible";
+    displayHouseScore.style.visibility = "visible";
+    restart.classList.remove("hide");
   }
-
   if (hands <= 1) {
     applauseSoundFunc();
     alertUser(`Game over! You leave with $${chips}`);
     writeScoreToMemory(chips);
     savePublicScore(chips);
     disableAll();
-    restart!.classList.remove("hide");
+    restart.classList.remove("hide");
   }
 }
-
 function win() {
   chips += pot * 2;
   playOver();
   winSoundFunc();
-  root!.style.setProperty("--main-bg-color", "#90EE90");
-  firstDraw!.disabled = true;
-  displayChips!.textContent = String(chips);
+  root.style.setProperty("--main-bg-color", "#90EE90");
+  firstDraw.disabled = true;
+  displayChips.textContent = String(chips);
   pot = 0;
-  displayPot!.textContent = String(pot);
+  displayPot.textContent = String(pot);
 }
-
 function lose() {
   playOver();
   loseSoundFunc();
-  root!.style.setProperty("--main-bg-color", "#f48a8a");
+  root.style.setProperty("--main-bg-color", "#f48a8a");
   if (chips === 0) {
     alertUser("Game over! Click restart to play again");
     disableAll();
     gameOverSoundFunc();
   }
-  displayChips!.textContent = String(chips);
+  displayChips.textContent = String(chips);
   pot = 0;
-  displayPot!.textContent = String(pot);
+  displayPot.textContent = String(pot);
 }
-
 function draw() {
   chips += pot;
   pot = 0;
   playOver();
   loseSoundFunc();
-  root!.style.setProperty("--main-bg-color", "##d9d9d9");
-  displayChips!.textContent = String(chips);
-  displayPot!.textContent = String(pot);
-  firstDraw!.disabled = true;
+  root.style.setProperty("--main-bg-color", "##d9d9d9");
+  displayChips.textContent = String(chips);
+  displayPot.textContent = String(pot);
+  firstDraw.disabled = true;
 }
-
 function betPulseOn() {
-  bet10P!.classList.add("pulse");
-  bet20P!.classList.add("pulse");
-  bet33P!.classList.add("pulse");
-  betAllP!.classList.add("pulse");
+  bet10P.classList.add("pulse");
+  bet20P.classList.add("pulse");
+  bet33P.classList.add("pulse");
+  betAllP.classList.add("pulse");
 }
-
 function betPulseOff() {
-  bet10P!.classList.remove("pulse");
-  bet20P!.classList.remove("pulse");
-  bet33P!.classList.remove("pulse");
-  betAllP!.classList.remove("pulse");
+  bet10P.classList.remove("pulse");
+  bet20P.classList.remove("pulse");
+  bet33P.classList.remove("pulse");
+  betAllP.classList.remove("pulse");
 }
-
 //displays result of standfunction call
-function showResult(result: string) {
+function showResult(result) {
   alertUser(result);
   switch (result) {
     case "House wins":
@@ -255,80 +220,67 @@ function showResult(result: string) {
       break;
   }
 }
-
-function alertUser(str: string) {
-  userMessage!.innerHTML = str;
+function alertUser(str) {
+  userMessage.innerHTML = str;
 }
-
 function drawSoundFunc() {
-  drawSound!.play();
+  drawSound.play();
 }
-
 function newCardSoundFunc() {
-  newCardSound!.play();
+  newCardSound.play();
 }
-
 function standSoundFunc() {
-  standSound!.play();
+  standSound.play();
 }
-
 function chipSoundFunc() {
-  chipSound!.currentTime = 0;
-  chipSound!.play();
+  chipSound.currentTime = 0;
+  chipSound.play();
 }
-
 function winSoundFunc() {
-  winSound!.play();
+  winSound.play();
 }
-
 function loseSoundFunc() {
-  loseSound!.play();
+  loseSound.play();
 }
-
 function gameOverSoundFunc() {
-  gameOverSound!.play();
+  gameOverSound.play();
 }
-
 function applauseSoundFunc() {
-  applauseSound!.play();
+  applauseSound.play();
 }
-
 function clickSoundFunc() {
-  clickSound!.currentTime = 0;
-  clickSound!.play();
+  clickSound.currentTime = 0;
+  clickSound.play();
 }
-
 function disableAll() {
   betPulseOff();
-  firstDraw!.disabled = true;
-  hit!.disabled = true;
-  stand!.disabled = true;
-  bet10P!.disabled = true;
-  bet20P!.disabled = true;
-  bet33P!.disabled = true;
-  betAllP!.disabled = true;
-  nxtGame!.disabled = true;
+  firstDraw.disabled = true;
+  hit.disabled = true;
+  stand.disabled = true;
+  bet10P.disabled = true;
+  bet20P.disabled = true;
+  bet33P.disabled = true;
+  betAllP.disabled = true;
+  nxtGame.disabled = true;
 }
-
 //controls toggling with menu buttons
-function toggleSection(btnType: string) {
-  backBtn!.classList.remove("hide");
+function toggleSection(btnType) {
+  backBtn.classList.remove("hide");
   if (btnType === "scoreboard") {
-    hideableSection!.classList.add("hide");
-    scoreboardDisplay!.classList.remove("hide");
-    helpDisplay!.classList.add("hide");
+    hideableSection.classList.add("hide");
+    scoreboardDisplay.classList.remove("hide");
+    helpDisplay.classList.add("hide");
   } else if (btnType === "help") {
-    hideableSection!.classList.add("hide");
-    scoreboardDisplay!.classList.add("hide");
-    helpDisplay!.classList.remove("hide");
+    hideableSection.classList.add("hide");
+    scoreboardDisplay.classList.add("hide");
+    helpDisplay.classList.remove("hide");
   } else if (btnType === "back") {
-    backBtn!.classList.add("hide");
-    scoreboardDisplay!.classList.add("hide");
-    helpDisplay!.classList.add("hide");
-    hideableSection!.classList.remove("hide");
+    backBtn.classList.add("hide");
+    scoreboardDisplay.classList.add("hide");
+    helpDisplay.classList.add("hide");
+    hideableSection.classList.remove("hide");
   }
 }
-
 //displays username if found in local storage
 function retrieveUserName() {
   let storedUser = localStorage.getItem("storedUser");
@@ -339,10 +291,9 @@ function retrieveUserName() {
     displaycurrUser.innerHTML = `🤠 ${storedUser}`;
   }
 }
-
 //stores new username in local storage
-function writeScoreToMemory(score: number) {
-  let currentHistory: number[] = [];
+function writeScoreToMemory(score) {
+  let currentHistory = [];
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
@@ -356,41 +307,38 @@ function writeScoreToMemory(score: number) {
     retrieveScores();
   }
 }
-
 //retrieves personal best scores from local storage
 function retrieveScores() {
-  let currentHistory: number[] = [];
+  let currentHistory = [];
   let stored = localStorage.getItem("storedHistory");
   if (stored) {
     currentHistory = JSON.parse(stored);
   }
-  while (localLeaderboard!.firstChild) {
-    localLeaderboard!.firstChild.remove();
+  while (localLeaderboard.firstChild) {
+    localLeaderboard.firstChild.remove();
   }
-
   if (currentHistory.length > 0) {
-    let sortedHistory = currentHistory.sort((a: number, b: number) => b - a);
+    let sortedHistory = currentHistory.sort((a, b) => b - a);
     sortedHistory = sortedHistory.slice(0, 10);
-    sortedHistory.forEach((score: number, index: number) => {
+    sortedHistory.forEach((score, index) => {
       let li = document.createElement("li");
       if (index === 0) {
         li.appendChild(document.createTextNode(`${score} (Personal best! 🔥)`));
       } else {
         li.appendChild(document.createTextNode(String(score)));
       }
-      localLeaderboard!.appendChild(li);
+      localLeaderboard.appendChild(li);
     });
   } else {
-    localLeaderboard!.appendChild(
+    localLeaderboard.appendChild(
       document.createTextNode(
         "Complete 10 rounds of BlackJack with a score above 0 to record your score"
       )
     );
   }
 }
-
 //saves score to firebase database
-function savePublicScore(finalChips: number) {
+function savePublicScore(finalChips) {
   let storedUser = localStorage.getItem("storedUser");
   if (storedUser === null) {
     storedUser = "Anon;";
@@ -414,16 +362,10 @@ function savePublicScore(finalChips: number) {
       console.log(err);
     });
 }
-
 //retrieves score from firebase database
 function collectPublicScores() {
-  //GET is default if not specified
-  interface ScoreObj {
-    score: number;
-    username: string;
-  }
-  while (publicLeaderboard!.firstChild) {
-    publicLeaderboard!.firstChild.remove();
+  while (publicLeaderboard.firstChild) {
+    publicLeaderboard.firstChild.remove();
   }
   fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
     .then((res) => {
@@ -432,9 +374,8 @@ function collectPublicScores() {
       }
       return res.json();
     })
-    .then((data: { uid: ScoreObj }) => {
+    .then((data) => {
       let savedScores = Object.values(data);
-
       let orderedScores = savedScores.sort((a, b) =>
         a.score > b.score ? -1 : 1
       );
@@ -452,7 +393,7 @@ function collectPublicScores() {
             document.createTextNode(`${String(obj.score)}: ${obj.username}`)
           );
         }
-        publicLeaderboard!.appendChild(li);
+        publicLeaderboard.appendChild(li);
       });
     })
     .catch((err) => {
