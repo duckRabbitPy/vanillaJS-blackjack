@@ -425,7 +425,7 @@ function collectPublicScores() {
   while (publicLeaderboard!.firstChild) {
     publicLeaderboard!.firstChild.remove();
   }
-  fetch(`https://vanilla-js-blackjack.vercel.app/api/database?name=Oli`)
+  fetch(`https://vanilla-js-blackjack.vercel.app//api/database?name=Oli`)
     .then((res) => {
       if (!res.ok) {
         throw new Error("Get request failed");
