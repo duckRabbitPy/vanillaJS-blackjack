@@ -425,12 +425,11 @@ function collectPublicScores() {
   while (publicLeaderboard!.firstChild) {
     publicLeaderboard!.firstChild.remove();
   }
-  fetch(`https://vanilla-js-blackjack.vercel.app//api/database?name=Oli`)
+  fetch(`https://fir-backend-a73fc-default-rtdb.firebaseio.com/Blackjack.json`)
     .then((res) => {
       if (!res.ok) {
         throw new Error("Get request failed");
       }
-      console.log(res);
       return res.json();
     })
     .then((data: { uid: ScoreObj }) => {
